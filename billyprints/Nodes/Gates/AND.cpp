@@ -17,7 +17,7 @@ bool AND::AND_F(const std::vector<bool> &input, const int &pinCount) {
   return current;
 }
 
-bool AND::Evaluate() {
+bool AND::Evaluate(const std::string &slot) {
   if (isEvaluating || lastEvaluatedFrame == GlobalFrameCount)
     return value;
 
@@ -30,7 +30,7 @@ bool AND::Evaluate() {
     std::vector<bool> input;
     for (const auto &cn : connections)
       if (cn.inputNode == this)
-        input.push_back(((Node *)cn.outputNode)->Evaluate());
+        input.push_back(((Node *)cn.outputNode)->Evaluate(cn.outputSlot));
 
     value = AND_F(input, inputSlotCount);
   }

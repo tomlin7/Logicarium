@@ -31,6 +31,10 @@ project "Billyprints"
         "libs/backends/*.cpp"
     }
 
+    removefiles {
+        "billyprints/Nodes/Gates/legacy/**"
+    }
+
     includedirs {
         "billyprints",
         "billyprints/Nodes",

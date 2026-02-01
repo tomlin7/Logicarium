@@ -1,7 +1,8 @@
 #include "PlaceholderGate.hpp"
 #include <ImNodes.h>
-#include <imgui.h>
 #include <cstdlib>
+#include <imgui.h>
+
 
 namespace Billyprints {
 
@@ -44,17 +45,20 @@ PlaceholderGate::PlaceholderGate(const std::string &typeName, int inputs,
 
 PlaceholderGate::~PlaceholderGate() {
   // Free strdup'd slot names
-  for (auto& slot : inputSlots) {
-    if (slot.title) free((void*)slot.title);
+  for (auto &slot : inputSlots) {
+    if (slot.title)
+      free((void *)slot.title);
   }
-  for (auto& slot : outputSlots) {
-    if (slot.title) free((void*)slot.title);
+  for (auto &slot : outputSlots) {
+    if (slot.title)
+      free((void *)slot.title);
   }
   // Free strdup'd title
-  if (title) free((void*)title);
+  if (title)
+    free((void *)title);
 }
 
-bool PlaceholderGate::Evaluate() {
+bool PlaceholderGate::Evaluate(const std::string &slot) {
   // Placeholder gates always return false (safe default)
   value = false;
   return false;

@@ -11,7 +11,7 @@ bool NOT::NOT_F(const std::vector<bool> &input, const int &) {
   return !input[0];
 }
 
-bool NOT::Evaluate() {
+bool NOT::Evaluate(const std::string &slot) {
   if (isEvaluating || lastEvaluatedFrame == GlobalFrameCount)
     return value;
 
@@ -23,7 +23,7 @@ bool NOT::Evaluate() {
     std::vector<bool> input;
     for (const auto &cn : connections)
       if (cn.inputNode == this)
-        input.push_back(((Node *)cn.outputNode)->Evaluate());
+        input.push_back(((Node *)cn.outputNode)->Evaluate(cn.outputSlot));
 
     value = NOT_F(input, inputSlotCount);
   }

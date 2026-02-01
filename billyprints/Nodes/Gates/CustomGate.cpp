@@ -125,62 +125,80 @@ CustomGate::~CustomGate() {
     delete node;
   }
   // Free strdup'd slot names
-  for (auto& slot : inputSlots) {
-    if (slot.title) free((void*)slot.title);
+  for (auto &slot : inputSlots) {
+    if (slot.title)
+      free((void *)slot.title);
   }
-  for (auto& slot : outputSlots) {
-    if (slot.title) free((void*)slot.title);
+  for (auto &slot : outputSlots) {
+    if (slot.title)
+      free((void *)slot.title);
   }
   // Free strdup'd title last
-  if (title) free((void*)title);
+  if (title)
+    free((void *)title);
 }
 
-bool CustomGate::Evaluate() {
-  if (isEvaluating || lastEvaluatedFrame == Node::GlobalFrameCount) {
-    return value;
+bool CustomGate::Evaluate(const std::string &slot) {
+  if (isEvaluating) {
+    return outputCache[slot]; // Simple cycle break
+  }
+
+  if (lastEvaluatedFrame == Node::GlobalFrameCount) {
+    if (slot.empty() && !internalOutputs.empty()) {
+      return outputCache[outputSlots[0].title];
+    }
+    return outputCache[slot];
   }
 
   isEvaluating = true;
 
-  // Step A: Update Internal PinIns
+  // Step A: Update Internal PinIns from external connections
   for (int i = 0; i < inputSlots.size(); ++i) {
     bool slotValue = false;
-    const char* slotName = inputSlots[i].title;
+    const char *slotName = inputSlots[i].title;
 
     for (const auto &conn : connections) {
       if (conn.inputNode == this && !conn.inputSlot.empty() &&
           strcmp(conn.inputSlot.c_str(), slotName) == 0) {
         Node *source = (Node *)conn.outputNode;
-        slotValue = source->Evaluate();
+        slotValue = source->Evaluate(conn.outputSlot); // Pull from source slot
         break;
       }
     }
 
-    if (i < internalInputs.size()) {
+    if (i < (int)internalInputs.size()) {
       internalInputs[i]->value = slotValue;
+      internalInputs[i]->lastEvaluatedFrame = GlobalFrameCount;
     }
   }
 
-  // Step B: Propagate Internal
-  // Reduced passes + caching makes this much faster.
-  // 3 passes is enough to settle most combinatorial logic without complex
-  // feedback.
-  for (int pass = 0; pass < 3; ++pass) {
-    for (auto node : internalNodes) {
-      node->Evaluate();
-    }
+  // Step B: Reset internal nodes' cache for this frame
+  // This allows the pull-back recursion to reach through the internal logic
+  for (auto node : internalNodes) {
+    node->lastEvaluatedFrame = 0;
   }
 
-  // Step C: Set Output
+  // Step C: Trigger recursion from all outputs and cache results
+  // For complex circuits with feedback, we might still want multiple passes,
+  // but for DAGs, one recursive pull per output is correct.
+  for (int i = 0; i < (int)internalOutputs.size(); ++i) {
+    bool val = internalOutputs[i]->Evaluate(); // Pulls through internal logic
+    outputCache[outputSlots[i].title] = val;
+  }
+
+  // Handle empty name or default
   if (!internalOutputs.empty()) {
-    value = internalOutputs[0]->value;
+    value = outputCache[outputSlots[0].title];
   } else {
     value = false;
   }
 
   lastEvaluatedFrame = Node::GlobalFrameCount;
   isEvaluating = false;
-  return value;
+
+  if (slot.empty())
+    return value;
+  return outputCache[slot];
 }
 
 } // namespace Billyprints

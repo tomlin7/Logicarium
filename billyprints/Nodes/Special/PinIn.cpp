@@ -3,7 +3,7 @@
 namespace Billyprints {
 PinIn::PinIn() : Node("In", {}, {{"out"}}) { value = true; };
 
-bool PinIn::Evaluate() {
+bool PinIn::Evaluate(const std::string &slot) {
   if (isEvaluating || lastEvaluatedFrame == GlobalFrameCount)
     return value;
   lastEvaluatedFrame = GlobalFrameCount;

@@ -21,7 +21,7 @@ void Node::DeleteConnection(const Connection &connection) {
   }
 }
 
-bool Node::Evaluate() {
+bool Node::Evaluate(const std::string &slot) {
   if (isEvaluating || lastEvaluatedFrame == GlobalFrameCount)
     return value;
   return value;

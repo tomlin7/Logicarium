@@ -15,7 +15,7 @@ public:
   PlaceholderGate(const std::string &missingTypeName, int inputs, int outputs);
   ~PlaceholderGate();
 
-  bool Evaluate() override;
+  bool Evaluate(const std::string &slot = "") override;
   void Render() override;
   ImU32 GetColor() const override;
 

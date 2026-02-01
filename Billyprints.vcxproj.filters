@@ -16,9 +16,6 @@
     <Filter Include="billyprints\Nodes\Gates">
       <UniqueIdentifier>{2C891A1F-98C0-62B6-A1CA-C6D90D8189AF}</UniqueIdentifier>
     </Filter>
-    <Filter Include="billyprints\Nodes\Gates\legacy">
-      <UniqueIdentifier>{D01A53D9-BC40-1D40-A586-A20B914B420C}</UniqueIdentifier>
-    </Filter>
     <Filter Include="billyprints\Nodes\Special">
       <UniqueIdentifier>{B918890D-25DB-BC97-6E8B-4B24DA8C9575}</UniqueIdentifier>
     </Filter>
@@ -77,24 +74,6 @@
     </ClInclude>
     <ClInclude Include="billyprints\Nodes\Gates\PlaceholderGate.hpp">
       <Filter>billyprints\Nodes\Gates</Filter>
-    </ClInclude>
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\Buffer.hpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\NAND.hpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\NOR.hpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\OR.hpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\XNOR.hpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\XOR.hpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
     </ClInclude>
     <ClInclude Include="billyprints\Nodes\Node.hpp">
       <Filter>billyprints\Nodes</Filter>
@@ -202,24 +181,6 @@
     </ClCompile>
     <ClCompile Include="billyprints\Nodes\Gates\PlaceholderGate.cpp">
       <Filter>billyprints\Nodes\Gates</Filter>
-    </ClCompile>
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\Buffer.cpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\NAND.cpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\NOR.cpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\OR.cpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\XNOR.cpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\XOR.cpp">
-      <Filter>billyprints\Nodes\Gates\legacy</Filter>
     </ClCompile>
     <ClCompile Include="billyprints\Nodes\Node.cpp">
       <Filter>billyprints\Nodes</Filter>

@@ -88,7 +88,7 @@ void Gate::Render() {
       if (connection.outputNode != this)
         continue;
 
-      bool signal = Evaluate();
+      bool signal = Evaluate(connection.outputSlot);
       ImColor activeColor = IM_COL32(50, 255, 150, 255);
       ImColor inactiveColor = IM_COL32(80, 90, 100, 255);
 
@@ -127,7 +127,8 @@ void Gate::Render() {
     }
     if (std::string(title) != "In" && std::string(title) != "Out") {
       bool isCustom = CustomGate::GateRegistry.count(title);
-      bool isTemporary = isCustom && CustomGate::GateRegistry[title].isTemporary;
+      bool isTemporary =
+          isCustom && CustomGate::GateRegistry[title].isTemporary;
 
       if (isCustom && isTemporary) {
         // Show "Save Gate" for temporary (script-defined) custom gates
@@ -165,7 +166,7 @@ bool Gate::EvaluateExpression() {
     bool val = false;
     for (const auto &conn : connections) {
       if (conn.inputNode == this && conn.inputSlot == name) {
-        val = ((Node *)conn.outputNode)->Evaluate();
+        val = ((Node *)conn.outputNode)->Evaluate(conn.outputSlot);
         break;
       }
     }

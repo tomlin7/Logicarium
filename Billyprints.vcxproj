@@ -111,12 +111,6 @@
     <ClInclude Include="billyprints\Nodes\Gates\Gate.hpp" />
     <ClInclude Include="billyprints\Nodes\Gates\NOT.hpp" />
     <ClInclude Include="billyprints\Nodes\Gates\PlaceholderGate.hpp" />
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\Buffer.hpp" />
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\NAND.hpp" />
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\NOR.hpp" />
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\OR.hpp" />
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\XNOR.hpp" />
-    <ClInclude Include="billyprints\Nodes\Gates\legacy\XOR.hpp" />
     <ClInclude Include="billyprints\Nodes\Node.hpp" />
     <ClInclude Include="billyprints\Nodes\Nodes.hpp" />
     <ClInclude Include="billyprints\Nodes\Special\PinIn.hpp" />
@@ -154,12 +148,6 @@
     <ClCompile Include="billyprints\Nodes\Gates\Gate.cpp" />
     <ClCompile Include="billyprints\Nodes\Gates\NOT.cpp" />
     <ClCompile Include="billyprints\Nodes\Gates\PlaceholderGate.cpp" />
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\Buffer.cpp" />
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\NAND.cpp" />
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\NOR.cpp" />
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\OR.cpp" />
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\XNOR.cpp" />
-    <ClCompile Include="billyprints\Nodes\Gates\legacy\XOR.cpp" />
     <ClCompile Include="billyprints\Nodes\Node.cpp" />
     <ClCompile Include="billyprints\Nodes\Nodes.cpp" />
     <ClCompile Include="billyprints\Nodes\Special\PinIn.cpp" />

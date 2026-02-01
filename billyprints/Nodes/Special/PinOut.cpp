@@ -3,13 +3,14 @@
 namespace Billyprints {
 PinOut::PinOut() : Node("Out", {{"in"}}, {}) { value = true; };
 
-bool PinOut::Evaluate() {
+bool PinOut::Evaluate(const std::string &slot) {
   if (isEvaluating || lastEvaluatedFrame == GlobalFrameCount)
     return value;
 
   isEvaluating = true;
   for (const auto &cn : connections) {
-    if (cn.inputNode == this && ((Node *)cn.outputNode)->Evaluate()) {
+    if (cn.inputNode == this &&
+        ((Node *)cn.outputNode)->Evaluate(cn.outputSlot)) {
       value = true;
       lastEvaluatedFrame = GlobalFrameCount;
       isEvaluating = false;

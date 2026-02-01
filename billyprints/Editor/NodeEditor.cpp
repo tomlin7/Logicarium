@@ -181,7 +181,8 @@ void NodeEditor::DuplicateSelectedNodes() {
   // Duplicate connections between selected nodes
   for (auto *node : selected) {
     for (const auto &conn : node->connections) {
-      // Only process connections where this node is the output (to avoid duplicating twice)
+      // Only process connections where this node is the output (to avoid
+      // duplicating twice)
       if (conn.outputNode != node)
         continue;
 
@@ -189,7 +190,8 @@ void NodeEditor::DuplicateSelectedNodes() {
       Node *outputNode = (Node *)conn.outputNode;
 
       // Check if both ends of the connection are in the selected set
-      if (originalToDuplicate.count(inputNode) && originalToDuplicate.count(outputNode)) {
+      if (originalToDuplicate.count(inputNode) &&
+          originalToDuplicate.count(outputNode)) {
         Connection newConn;
         newConn.inputNode = originalToDuplicate[inputNode];
         newConn.inputSlot = conn.inputSlot;
@@ -218,8 +220,10 @@ void NodeEditor::FrameSelectedNodes() {
       hasSelection = true;
       minPos.x = ImMin(minPos.x, node->pos.x);
       minPos.y = ImMin(minPos.y, node->pos.y);
-      maxPos.x = ImMax(maxPos.x, node->pos.x + 150.0f); // Approximate node width
-      maxPos.y = ImMax(maxPos.y, node->pos.y + 80.0f);  // Approximate node height
+      maxPos.x =
+          ImMax(maxPos.x, node->pos.x + 150.0f); // Approximate node width
+      maxPos.y =
+          ImMax(maxPos.y, node->pos.y + 80.0f); // Approximate node height
     }
   }
 
@@ -237,8 +241,8 @@ void NodeEditor::FrameSelectedNodes() {
     return; // No nodes at all
 
   // Center the view on the bounding box
-  ImVec2 center = ImVec2((minPos.x + maxPos.x) * 0.5f,
-                         (minPos.y + maxPos.y) * 0.5f);
+  ImVec2 center =
+      ImVec2((minPos.x + maxPos.x) * 0.5f, (minPos.y + maxPos.y) * 0.5f);
   ImVec2 canvasSize = ImGui::GetContentRegionAvail();
   canvas->Offset = ImVec2(canvasSize.x * 0.5f - center.x * canvas->Zoom,
                           canvasSize.y * 0.5f - center.y * canvas->Zoom);
@@ -324,14 +328,16 @@ void NodeEditor::HandleKeyBindings() {
   }
 
   // +/=: Zoom in
-  if (ImGui::IsKeyPressed(ImGuiKey_Equal) || ImGui::IsKeyPressed(ImGuiKey_KeypadAdd)) {
+  if (ImGui::IsKeyPressed(ImGuiKey_Equal) ||
+      ImGui::IsKeyPressed(ImGuiKey_KeypadAdd)) {
     if (canvas) {
       canvas->Zoom = ImMin(canvas->Zoom * 1.2f, 4.0f);
     }
   }
 
   // -: Zoom out
-  if (ImGui::IsKeyPressed(ImGuiKey_Minus) || ImGui::IsKeyPressed(ImGuiKey_KeypadSubtract)) {
+  if (ImGui::IsKeyPressed(ImGuiKey_Minus) ||
+      ImGui::IsKeyPressed(ImGuiKey_KeypadSubtract)) {
     if (canvas) {
       canvas->Zoom = ImMax(canvas->Zoom / 1.2f, 0.25f);
     }
@@ -538,7 +544,8 @@ void NodeEditor::Redraw() {
             }
           }
           UpdateScriptFromNodes();
-          lastParsedScript = currentScript;
+          lastParsedScript = ""; // Force reparse to ensure visual consistency
+          UpdateNodesFromScript();
           break;
         }
       }
@@ -581,7 +588,7 @@ void NodeEditor::Redraw() {
         // Add to customGateDefinitions for serialization
         customGateDefinitions.push_back(def);
 
-		// Add to availableGates to show in the dock
+        // Add to availableGates to show in the dock
         availableGates.push_back(
             [def]() -> Gate * { return new CustomGate(def); });
       }
@@ -884,7 +891,8 @@ void NodeEditor::Redraw() {
 
       // Second line: gate list
       ImGui::SetCursorPosY(firstLineY + ImGui::GetTextLineHeightWithSpacing());
-      ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.7f, 1.0f), "%s", typeList.c_str());
+      ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.7f, 1.0f), "%s",
+                         typeList.c_str());
 
       ImGui::EndChild();
       ImGui::PopStyleColor();
