@@ -12,7 +12,8 @@
 
 namespace Billyprints {
 
-// Helper to check if a type is a built-in type (actually created by CreateNodeByType)
+// Helper to check if a type is a built-in type (actually created by
+// CreateNodeByType)
 static bool IsBuiltInType(const std::string &type) {
   // Only types that CreateNodeByType can actually create without the registry
   return type == "AND" || type == "NOT" || type == "In" || type == "Out" ||
@@ -141,6 +142,10 @@ void NodeEditor::LoadGates(const std::string &filename) {
     return;
 
   customGateDefinitions.clear();
+  availableGates = {
+      []() -> Gate * { return new AND(); },
+      []() -> Gate * { return new NOT(); },
+  };
 
   size_t count = 0;
   fread(&count, sizeof(size_t), 1, f);
@@ -225,8 +230,8 @@ void NodeEditor::TryUpgradePlaceholders() {
     // Check if the gate definition is now available
     if (CustomGate::GateRegistry.count(placeholder->missingTypeName)) {
       // Create the real gate
-      auto *realGate =
-          new CustomGate(CustomGate::GateRegistry[placeholder->missingTypeName]);
+      auto *realGate = new CustomGate(
+          CustomGate::GateRegistry[placeholder->missingTypeName]);
 
       // Copy position and ID
       realGate->pos = placeholder->pos;
@@ -247,9 +252,8 @@ void NodeEditor::TryUpgradePlaceholders() {
         realGate->connections.push_back(conn);
 
         // Update the other node's reference to point to real gate
-        Node *otherNode = (conn.inputNode == realGate)
-                              ? (Node *)conn.outputNode
-                              : (Node *)conn.inputNode;
+        Node *otherNode = (conn.inputNode == realGate) ? (Node *)conn.outputNode
+                                                       : (Node *)conn.inputNode;
 
         for (auto &otherConn : otherNode->connections) {
           if (otherConn.inputNode == placeholder) {
@@ -401,10 +405,10 @@ void NodeEditor::LoadScene(const std::string &filename) {
   char magic[4];
   fread(magic, 1, 4, f);
 
-  bool isV1 =
-      (magic[0] == 'B' && magic[1] == 'P' && magic[2] == 'S' && magic[3] == '1');
-  bool isV2 =
-      (magic[0] == 'B' && magic[1] == 'P' && magic[2] == 'S' && magic[3] == '2');
+  bool isV1 = (magic[0] == 'B' && magic[1] == 'P' && magic[2] == 'S' &&
+               magic[3] == '1');
+  bool isV2 = (magic[0] == 'B' && magic[1] == 'P' && magic[2] == 'S' &&
+               magic[3] == '2');
 
   if (!isV1 && !isV2) {
     fclose(f);
@@ -444,7 +448,8 @@ void NodeEditor::LoadScene(const std::string &filename) {
 
     if (!missingGateTypes.empty()) {
       showMissingGatesBanner = true;
-      debugMsg = "Missing gates detected: " + std::to_string(missingGateTypes.size());
+      debugMsg =
+          "Missing gates detected: " + std::to_string(missingGateTypes.size());
     }
   }
 

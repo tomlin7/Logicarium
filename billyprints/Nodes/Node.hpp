@@ -27,6 +27,7 @@ public:
   Node(const char *title, std::vector<ImNodes::Ez::SlotInfo> &&_inputSlots,
        std::vector<ImNodes::Ez::SlotInfo> &&_outputSlots);
   void DeleteConnection(const Connection &connection);
+  virtual ~Node() = default;
   virtual bool Evaluate();
   virtual void Render();
   virtual ImU32 GetColor() const;

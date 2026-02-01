@@ -581,8 +581,9 @@ void NodeEditor::Redraw() {
         // Add to customGateDefinitions for serialization
         customGateDefinitions.push_back(def);
 
-        // Note: NOT adding to availableGates (dock) to avoid memory issues
-        // Gate can still be used via script or context menu
+		// Add to availableGates to show in the dock
+        availableGates.push_back(
+            [def]() -> Gate * { return new CustomGate(def); });
       }
     }
     nodeToSaveGate = nullptr;
