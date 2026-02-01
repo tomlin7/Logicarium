@@ -832,12 +832,14 @@ void NodeEditor::Redraw() {
       if (ImGui::Button("Save and Close", ImVec2(120, 0))) {
         UpdateGateDefinitionFromCurrentScene(editingGateName);
         currentScript = originalSceneScript;
+        lastParsedScript = ""; // Force reparse
         UpdateNodesFromScript();
         editingGateName = "";
       }
       ImGui::SameLine();
       if (ImGui::Button("Discard", ImVec2(80, 0))) {
         currentScript = originalSceneScript;
+        lastParsedScript = ""; // Force reparse
         UpdateNodesFromScript();
         editingGateName = "";
       }
@@ -1036,6 +1038,7 @@ void NodeEditor::Redraw() {
     }
     ImGui::SameLine();
     if (ImGui::SmallButton("Apply")) {
+      lastParsedScript = ""; // Force reparse
       UpdateNodesFromScript();
     }
     ImGui::PopStyleVar(); // FramePadding
