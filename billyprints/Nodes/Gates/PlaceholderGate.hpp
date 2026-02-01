@@ -13,7 +13,7 @@ namespace Billyprints {
 class PlaceholderGate : public Gate {
 public:
   PlaceholderGate(const std::string &missingTypeName, int inputs, int outputs);
-  ~PlaceholderGate() = default;
+  ~PlaceholderGate();
 
   bool Evaluate() override;
   void Render() override;

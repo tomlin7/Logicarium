@@ -1,6 +1,7 @@
 #include "PlaceholderGate.hpp"
 #include <ImNodes.h>
 #include <imgui.h>
+#include <cstdlib>
 
 namespace Billyprints {
 
@@ -41,6 +42,18 @@ PlaceholderGate::PlaceholderGate(const std::string &typeName, int inputs,
   }
 }
 
+PlaceholderGate::~PlaceholderGate() {
+  // Free strdup'd slot names
+  for (auto& slot : inputSlots) {
+    if (slot.title) free((void*)slot.title);
+  }
+  for (auto& slot : outputSlots) {
+    if (slot.title) free((void*)slot.title);
+  }
+  // Free strdup'd title
+  if (title) free((void*)title);
+}
+
 bool PlaceholderGate::Evaluate() {
   // Placeholder gates always return false (safe default)
   value = false;
@@ -71,7 +84,8 @@ void PlaceholderGate::Render() {
   // Display with "?" prefix to indicate missing
   std::string displayTitle = "? " + missingTypeName;
 
-  bool open = ImNodes::Ez::BeginNode(this, displayTitle.c_str(), &pos, &selected);
+  bool open =
+      ImNodes::Ez::BeginNode(this, displayTitle.c_str(), &pos, &selected);
   if (open) {
     ImNodes::Ez::InputSlots(inputSlots.data(), (int)inputSlots.size());
     ImNodes::Ez::OutputSlots(outputSlots.data(), (int)outputSlots.size());
@@ -106,7 +120,8 @@ void PlaceholderGate::Render() {
       }
 
       ((Node *)new_connection.inputNode)->connections.push_back(new_connection);
-      ((Node *)new_connection.outputNode)->connections.push_back(new_connection);
+      ((Node *)new_connection.outputNode)
+          ->connections.push_back(new_connection);
     }
 
     // Render connections (grayed out since gate doesn't work)
@@ -125,9 +140,9 @@ void PlaceholderGate::Render() {
         canvas->Colors[ImNodes::ColConnection] = IM_COL32(100, 80, 80, 180);
       }
 
-      if (!ImNodes::Connection(connection.inputNode, connection.inputSlot.c_str(),
-                               connection.outputNode,
-                               connection.outputSlot.c_str())) {
+      if (!ImNodes::Connection(
+              connection.inputNode, connection.inputSlot.c_str(),
+              connection.outputNode, connection.outputSlot.c_str())) {
         ((Node *)connection.inputNode)->DeleteConnection(connection);
         ((Node *)connection.outputNode)->DeleteConnection(connection);
       }

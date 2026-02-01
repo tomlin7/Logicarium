@@ -70,6 +70,7 @@ void NodeEditor::CreateGate() {
   def.color =
       IM_COL32((int)(newGateColor[0] * 255), (int)(newGateColor[1] * 255),
                (int)(newGateColor[2] * 255), 200);
+  def.isTemporary = false; // UI-created gates are permanent
 
   customGateDefinitions.push_back(def);
   CustomGate::GateRegistry[def.name] = def;
@@ -203,6 +204,7 @@ void NodeEditor::LoadGates(const std::string &filename) {
     def.outputPinIndices.resize(outPinCount);
     fread(def.outputPinIndices.data(), sizeof(int), outPinCount, f);
 
+    def.isTemporary = false; // Loaded gates are permanent
     customGateDefinitions.push_back(def);
     CustomGate::GateRegistry[def.name] = def;
     availableGates.push_back([def]() -> Gate * { return new CustomGate(def); });

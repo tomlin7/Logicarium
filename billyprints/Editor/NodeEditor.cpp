@@ -16,6 +16,7 @@ inline void NodeEditor::RenderNode(Node *node) { node->Render(); }
 Node *nodeToDuplicate = nullptr;
 Node *nodeToEdit = nullptr;
 Node *nodeToDelete = nullptr;
+Node *nodeToSaveGate = nullptr;
 bool nodeHoveredForContextMenu = false;
 
 void NodeEditor::RenderDock() {
@@ -466,6 +467,8 @@ inline void NodeEditor::RenderContextMenu() {
         if (ImGui::MenuItem(item->title)) {
           nodes.push_back(item);
           ImNodes::AutoPositionNode(nodes.back());
+        } else {
+          delete item; // Don't leak if not clicked
         }
       }
       ImGui::EndMenu();
@@ -564,6 +567,25 @@ void NodeEditor::Redraw() {
       }
     }
     nodeToDelete = nullptr;
+  }
+
+  // Handle saving a temporary gate to permanent library
+  if (nodeToSaveGate) {
+    std::string gateNameToSave = nodeToSaveGate->title;
+    if (CustomGate::GateRegistry.count(gateNameToSave)) {
+      auto &def = CustomGate::GateRegistry[gateNameToSave];
+      if (def.isTemporary) {
+        // Mark as permanent
+        def.isTemporary = false;
+
+        // Add to customGateDefinitions for serialization
+        customGateDefinitions.push_back(def);
+
+        // Note: NOT adding to availableGates (dock) to avoid memory issues
+        // Gate can still be used via script or context menu
+      }
+    }
+    nodeToSaveGate = nullptr;
   }
 
   Node::GlobalFrameCount++;

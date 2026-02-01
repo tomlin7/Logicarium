@@ -416,7 +416,11 @@ static bool ParseGateDefinition(const std::string &defBlock,
     nodeIdCounter++;
   }
 
-  // Register the gate
+  // Register the gate (preserve isTemporary if already registered as permanent)
+  if (CustomGate::GateRegistry.count(def.name) &&
+      !CustomGate::GateRegistry[def.name].isTemporary) {
+    def.isTemporary = false;
+  }
   CustomGate::GateRegistry[def.name] = def;
 
   return true;
@@ -530,41 +534,40 @@ void NodeEditor::UpdateScriptFromNodes() {
   currentScript = ss.str();
 }
 
-// Helper to resolve a slot name for a custom gate
-// Accepts both named pins (a, b) and indexed pins (in0, in1)
-// Returns the actual slot name used by the node (in0, in1, etc.)
+// Helper to get the actual slot title for a custom gate given a slot reference
+// Accepts both named (a, b) and indexed (in0, in1), returns the actual slot name
 static std::string ResolveSlotName(Node* node, const std::string& slotName, bool isInput) {
-  // Check if this is a custom gate
-  if (CustomGate::GateRegistry.count(node->title)) {
-    const auto& def = CustomGate::GateRegistry[node->title];
+  if (!CustomGate::GateRegistry.count(node->title))
+    return slotName;
 
-    if (isInput) {
-      // Check if slotName matches a defined input name (a, b, etc.)
-      for (size_t i = 0; i < def.inputPinNames.size(); ++i) {
-        if (def.inputPinNames[i] == slotName) {
-          // Map to indexed slot name
-          if (def.inputPinNames.size() == 1)
-            return "in";
-          else
-            return "in" + std::to_string(i);
-        }
-      }
-    } else {
-      // Check if slotName matches a defined output name
-      for (size_t i = 0; i < def.outputPinNames.size(); ++i) {
-        if (def.outputPinNames[i] == slotName) {
-          // Map to indexed slot name
-          if (def.outputPinNames.size() == 1)
-            return "out";
-          else
-            return "out" + std::to_string(i);
-        }
-      }
+  const auto& def = CustomGate::GateRegistry[node->title];
+
+  if (isInput && !def.inputPinNames.empty()) {
+    // Check if slotName is already a custom name
+    for (const auto& name : def.inputPinNames) {
+      if (name == slotName) return slotName;
+    }
+    // Map indexed to custom name
+    if (slotName == "in" && def.inputPinNames.size() == 1)
+      return def.inputPinNames[0];
+    for (size_t i = 0; i < def.inputPinNames.size(); ++i) {
+      if (slotName == "in" + std::to_string(i))
+        return def.inputPinNames[i];
+    }
+  } else if (!isInput && !def.outputPinNames.empty()) {
+    // Check if slotName is already a custom name
+    for (const auto& name : def.outputPinNames) {
+      if (name == slotName) return slotName;
+    }
+    // Map indexed to custom name
+    if (slotName == "out" && def.outputPinNames.size() == 1)
+      return def.outputPinNames[0];
+    for (size_t i = 0; i < def.outputPinNames.size(); ++i) {
+      if (slotName == "out" + std::to_string(i))
+        return def.outputPinNames[i];
     }
   }
 
-  // Not a custom gate or slot name didn't match defined names
-  // Return as-is (might be in0, in1, out, etc.)
   return slotName;
 }
 
@@ -641,7 +644,7 @@ void NodeEditor::UpdateNodesFromScript() {
           Node *outNode = idToNode[outS.first];
           Node *inNode = idToNode[inS.first];
 
-          // Resolve slot names (translates named pins like "a" to indexed "in0")
+          // Resolve slot names for VALIDATION only (maps in0->a if custom names exist)
           std::string resolvedOutSlot = ResolveSlotName(outNode, outS.second, false);
           std::string resolvedInSlot = ResolveSlotName(inNode, inS.second, true);
 
@@ -702,5 +705,9 @@ void NodeEditor::UpdateNodesFromScript() {
       scriptError += "Line " + std::to_string(lineNum) + ": Unexpected error\n";
     }
   }
+
+  // After parsing, regenerate script to normalize it and prevent re-parse loops
+  UpdateScriptFromNodes();
+  lastParsedScript = currentScript;
 }
 } // namespace Billyprints

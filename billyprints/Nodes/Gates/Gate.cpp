@@ -6,6 +6,7 @@ namespace Billyprints {
 extern Node *nodeToDuplicate;
 extern Node *nodeToEdit;
 extern Node *nodeToDelete;
+extern Node *nodeToSaveGate; // Gate to save permanently
 extern bool nodeHoveredForContextMenu;
 
 Gate::Gate(const char *_title, std::vector<ImNodes::Ez::SlotInfo> &&_inputSlots,
@@ -126,8 +127,20 @@ void Gate::Render() {
     }
     if (std::string(title) != "In" && std::string(title) != "Out") {
       bool isCustom = CustomGate::GateRegistry.count(title);
-      if (ImGui::MenuItem(isCustom ? "Edit Circuit" : "Edit Logic")) {
-        nodeToEdit = this;
+      bool isTemporary = isCustom && CustomGate::GateRegistry[title].isTemporary;
+
+      if (isCustom && isTemporary) {
+        // Show "Save Gate" for temporary (script-defined) custom gates
+        if (ImGui::MenuItem("Save Gate")) {
+          nodeToSaveGate = this;
+        }
+      }
+
+      if (!isTemporary) {
+        // Only show Edit Circuit/Logic for saved gates
+        if (ImGui::MenuItem(isCustom ? "Edit Circuit" : "Edit Logic")) {
+          nodeToEdit = this;
+        }
       }
     }
     ImGui::Separator();

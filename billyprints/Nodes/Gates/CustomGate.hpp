@@ -31,6 +31,7 @@ struct GateDefinition {
   std::vector<std::string> inputPinNames;  // Original parameter names (a, b, etc.)
   std::vector<std::string> outputPinNames; // Original output names (out, result, etc.)
   ImU32 color = IM_COL32(50, 50, 50, 200); // Default dark grey
+  bool isTemporary = true; // True if defined via script, false when saved to library
 };
 
 Node *CreateNodeByType(const std::string &type);

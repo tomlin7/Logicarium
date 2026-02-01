@@ -4,6 +4,7 @@
 #include "AND.hpp"
 #include "NOT.hpp"
 #include "PlaceholderGate.hpp"
+#include <cstdlib>
 
 namespace Billyprints {
 
@@ -73,20 +74,30 @@ CustomGate::CustomGate(const GateDefinition &def)
   outputSlots.resize(outputSlotCount);
 
   for (int i = 0; i < inputSlotCount; ++i) {
-    char buf[16];
-    if (inputSlotCount == 1)
-      sprintf(buf, "in");
-    else
-      sprintf(buf, "in%d", i);
-    inputSlots[i] = {strdup(buf), 1};
+    // Use custom pin names if defined (from script), otherwise indexed names
+    if (i < (int)def.inputPinNames.size() && !def.inputPinNames[i].empty()) {
+      inputSlots[i] = {strdup(def.inputPinNames[i].c_str()), 1};
+    } else {
+      char buf[16];
+      if (inputSlotCount == 1)
+        sprintf(buf, "in");
+      else
+        sprintf(buf, "in%d", i);
+      inputSlots[i] = {strdup(buf), 1};
+    }
   }
   for (int i = 0; i < outputSlotCount; ++i) {
-    char buf[16];
-    if (outputSlotCount == 1)
-      sprintf(buf, "out");
-    else
-      sprintf(buf, "out%d", i);
-    outputSlots[i] = {strdup(buf), 1};
+    // Use custom pin names if defined (from script), otherwise indexed names
+    if (i < (int)def.outputPinNames.size() && !def.outputPinNames[i].empty()) {
+      outputSlots[i] = {strdup(def.outputPinNames[i].c_str()), 1};
+    } else {
+      char buf[16];
+      if (outputSlotCount == 1)
+        sprintf(buf, "out");
+      else
+        sprintf(buf, "out%d", i);
+      outputSlots[i] = {strdup(buf), 1};
+    }
   }
 
   // 3. Create Internal Connections
@@ -109,9 +120,19 @@ CustomGate::CustomGate(const GateDefinition &def)
 }
 
 CustomGate::~CustomGate() {
+  // Delete internal nodes first
   for (auto node : internalNodes) {
     delete node;
   }
+  // Free strdup'd slot names
+  for (auto& slot : inputSlots) {
+    if (slot.title) free((void*)slot.title);
+  }
+  for (auto& slot : outputSlots) {
+    if (slot.title) free((void*)slot.title);
+  }
+  // Free strdup'd title last
+  if (title) free((void*)title);
 }
 
 bool CustomGate::Evaluate() {
@@ -124,11 +145,7 @@ bool CustomGate::Evaluate() {
   // Step A: Update Internal PinIns
   for (int i = 0; i < inputSlots.size(); ++i) {
     bool slotValue = false;
-    char slotName[16];
-    if (inputSlots.size() == 1)
-      sprintf(slotName, "in");
-    else
-      sprintf(slotName, "in%d", i);
+    const char* slotName = inputSlots[i].title;
 
     for (const auto &conn : connections) {
       if (conn.inputNode == this && !conn.inputSlot.empty() &&
