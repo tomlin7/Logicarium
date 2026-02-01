@@ -1,0 +1,382 @@
+---
+title: AI Assistant
+description: Use AI to generate and modify circuit logic with natural language
+---
+
+# AI Assistant
+
+The AI Assistant allows you to create and modify digital logic circuits using natural language. Powered by Claude AI, it understands the Billyprints DSL and can generate complete circuits from simple descriptions.
+
+## Features
+
+- **Natural Language Input**: Describe circuits in plain English
+- **DSL-Aware**: Generates valid Billyprints DSL code
+- **Streaming Responses**: See AI output as it's generated
+- **Accept/Reject Changes**: Review before applying to your circuit
+- **Context-Aware**: Uses your current script as context
+
+## Setup
+
+### 1. Install OpenSSL
+
+The AI Assistant requires HTTPS support. Install OpenSSL:
+
+**Windows (Scoop)**:
+```bash
+scoop install openssl
+```
+
+**Windows (Chocolatey)**:
+```bash
+choco install openssl
+```
+
+**Manual Installation**:
+Download from [https://slproweb.com/products/Win32OpenSSL.html](https://slproweb.com/products/Win32OpenSSL.html)
+
+### 2. Get an API Key
+
+You need a Claude API key from Anthropic:
+
+1. Sign up at [console.anthropic.com](https://console.anthropic.com)
+2. Navigate to API Keys
+3. Create a new API key
+4. Copy the key (starts with `sk-ant-api03-...`)
+
+### 3. Configure Billyprints
+
+Create a file named `ai_config.json` in the same directory as `Billyprints.exe`:
+
+```json
+{
+  "provider": "anthropic",
+  "endpoint": "https://api.anthropic.com/v1/messages",
+  "apiKey": "sk-ant-api03-YOUR_KEY_HERE",
+  "model": "claude-3-5-sonnet-20241022",
+  "maxTokens": 4096,
+  "temperature": 0.7
+}
+```
+
+**Important**: Replace `YOUR_KEY_HERE` with your actual API key.
+
+## Usage
+
+### Opening the AI Assistant
+
+1. Open the Script Panel by pressing **Tab**
+2. Scroll to the bottom to find the **AI Assistant** section
+3. The section is collapsible - click the header to expand/collapse
+
+### Making Requests
+
+1. **Enter a prompt** in the text input field
+2. Click **Send** or press **Enter**
+3. Wait for the AI response (you'll see "Connecting..." then "Streaming...")
+4. Review the generated code
+
+### Example Prompts
+
+**Simple Gates**:
+```
+Create a simple AND gate circuit
+```
+
+**Complex Circuits**:
+```
+Build a half adder with two inputs and sum/carry outputs
+```
+
+**Custom Gates**:
+```
+Make an XOR gate using only AND and NOT gates
+```
+
+**Modifications**:
+```
+Add a third input to this circuit
+```
+
+### Accepting Changes
+
+Once the AI completes its response:
+
+1. **Review the output** - the AI explains what it created
+2. Click **Accept** to apply the code to your script
+3. The nodes will automatically appear on the canvas
+4. Any errors will be shown in the error panel
+
+### Other Actions
+
+- **Reject**: Discard the AI's suggestion without applying it
+- **Copy**: Copy the response to clipboard for manual editing
+- **Cancel**: Stop an in-progress request
+- **Retry**: Try the same prompt again (appears after errors)
+
+## How It Works
+
+### Context Awareness
+
+The AI Assistant includes your current script as context:
+
+```
+Current script:
+```billyprints
+[Your existing circuit code]
+```
+
+[Your prompt]
+```
+
+This allows it to:
+- Modify existing circuits
+- Add new components
+- Reference existing nodes
+- Maintain your coding style
+
+### DSL Knowledge
+
+The AI is trained on Billyprints DSL syntax:
+
+- **Node Types**: In, Out, AND, NOT, custom gates
+- **Connections**: `source.out -> target.in` syntax
+- **Custom Gates**: `define...end` blocks
+- **Rules**: Only AND/NOT are primitives, no nested calls
+
+### Code Extraction
+
+The AI wraps its output in code fences:
+
+````markdown
+I've created a half adder circuit:
+
+```billyprints
+define XOR(a, b) -> (out):
+  na = NOT a
+  nb = NOT b
+  t1 = a AND nb
+  t2 = na AND b
+  out = OR(t1, t2)
+end
+
+In A @ 50, 50
+In B @ 50, 150
+XOR sum @ 200, 100
+AND carry @ 200, 200
+Out sum_out @ 400, 100
+Out carry_out @ 400, 200
+
+A.out -> sum.in0
+B.out -> sum.in1
+sum.out -> sum_out.in
+
+A.out -> carry.in0
+B.out -> carry.in1
+carry.out -> carry_out.in
+```
+````
+
+Billyprints automatically extracts the code from these fences.
+
+## Configuration Options
+
+### ai_config.json Fields
+
+| Field | Description | Default |
+|-------|-------------|---------|
+| `provider` | AI provider (only "anthropic" supported) | `"anthropic"` |
+| `endpoint` | API endpoint URL | `"https://api.anthropic.com/v1/messages"` |
+| `apiKey` | Your API key | `""` (required) |
+| `model` | Claude model to use | `"claude-3-5-sonnet-20241022"` |
+| `maxTokens` | Maximum response length | `4096` |
+| `temperature` | Response creativity (0.0-1.0) | `0.7` |
+
+### Recommended Models
+
+- **claude-3-5-sonnet-20241022**: Best balance of speed and quality (recommended)
+- **claude-3-opus-20240229**: Most capable, slower
+- **claude-3-haiku-20240307**: Fastest, less capable
+
+## Troubleshooting
+
+### "Invalid API key"
+
+**Error**: `HTTP 401: Invalid API key. Check ai_config.json`
+
+**Solution**:
+1. Verify your API key is correct in `ai_config.json`
+2. Ensure the key starts with `sk-ant-api03-`
+3. Check for extra spaces or quotes in the JSON file
+4. Verify your Anthropic account has API access
+
+### "Connection failed"
+
+**Error**: `Connection failed: ...`
+
+**Solutions**:
+1. Check your internet connection
+2. Verify firewall isn't blocking HTTPS connections
+3. Try pinging `api.anthropic.com`
+4. Ensure OpenSSL is properly installed
+
+### "HTTPS not supported"
+
+**Error**: `HTTPS not supported. Please install OpenSSL...`
+
+**Solution**:
+1. Install OpenSSL (see Setup section)
+2. Rebuild Billyprints with OpenSSL support:
+   ```bash
+   premake5 vs2022
+   msbuild Billyprints.sln /p:Configuration=Debug /p:Platform=x64
+   ```
+
+### "Rate limit exceeded"
+
+**Error**: `HTTP 429: Rate limit exceeded. Wait and retry.`
+
+**Solution**:
+1. Wait a few seconds before retrying
+2. Check your Anthropic dashboard for rate limits
+3. Consider upgrading your Anthropic plan
+
+### Invalid DSL Generated
+
+If the AI generates invalid code:
+
+1. Check the **error panel** for parsing errors
+2. Click **Reject** and try a more specific prompt
+3. Manually edit the script if needed
+4. Report persistent issues to improve the system prompt
+
+### No Response / Timeout
+
+If the AI doesn't respond:
+
+1. Check the error panel for error messages
+2. Verify `ai_config.json` exists and is valid JSON
+3. Check console output for debugging info
+4. Try a simpler prompt first
+
+## Best Practices
+
+### Writing Effective Prompts
+
+**Be Specific**:
+```
+❌ "Make a gate"
+✅ "Create a 2-input XOR gate using AND and NOT gates"
+```
+
+**Include Context**:
+```
+❌ "Add an output"
+✅ "Add an output LED connected to gate1.out"
+```
+
+**One Task at a Time**:
+```
+❌ "Create XOR, OR, and NAND gates and connect them"
+✅ "Create an XOR gate" (then ask for connections separately)
+```
+
+### Working with Existing Circuits
+
+When modifying circuits:
+
+1. Make sure your current script is saved
+2. Clearly describe what to modify
+3. Mention existing node names if referencing them
+4. Review changes carefully before accepting
+
+### Iterative Development
+
+Build circuits incrementally:
+
+1. Start with basic components
+2. Test each addition
+3. Use AI for repetitive parts
+4. Manually fine-tune positions and connections
+
+## Privacy & Costs
+
+### Data Sent to API
+
+When you send a request, the following is transmitted to Anthropic:
+- Your prompt text
+- Your current script content (for context)
+- System prompt with DSL syntax
+
+**Not sent**:
+- Node positions (except in script)
+- Visual state
+- Other files or data
+
+### API Costs
+
+Anthropic charges per token:
+- **Input**: ~$3 per million tokens
+- **Output**: ~$15 per million tokens
+
+Typical request costs:
+- Simple circuit: $0.01 - $0.03
+- Complex circuit: $0.05 - $0.10
+
+Monitor usage in your [Anthropic dashboard](https://console.anthropic.com).
+
+## Technical Details
+
+### Architecture
+
+```
+NodeEditor (UI)
+  └─> AIAssistant
+       ├─> HTTPClient (cpp-httplib wrapper)
+       ├─> AnthropicProvider (request/response formatting)
+       └─> ConfigManager (config loading)
+```
+
+### System Prompt
+
+The AI uses a detailed system prompt that includes:
+- Billyprints DSL syntax reference
+- Node types and connection format
+- Custom gate definition rules
+- Examples of common patterns
+
+See `billyprints/AI/SystemPrompt.hpp` for the full prompt.
+
+### Response Processing
+
+1. Request sent with current script as context
+2. Response received (currently non-streaming)
+3. SSE events parsed line-by-line
+4. Text deltas extracted and accumulated
+5. Complete response shown in UI
+6. Code extracted from markdown fences
+7. Applied to `scriptBuf` on Accept
+8. `UpdateNodesFromScript()` parses and creates nodes
+
+### File Locations
+
+- **Config**: `ai_config.json` (next to exe)
+- **Source**: `billyprints/AI/` directory
+- **System Prompt**: `billyprints/AI/SystemPrompt.hpp`
+- **UI Code**: `billyprints/Editor/NodeEditor_AI.cpp`
+
+## Future Enhancements
+
+Planned improvements:
+
+- **True Streaming**: Real-time response display (requires different HTTP approach)
+- **Conversation History**: Multi-turn conversations
+- **Diff View**: Visual comparison of changes
+- **Templates**: Pre-defined circuit patterns
+- **Local LLM Support**: Use Ollama or llama.cpp
+- **Other Providers**: OpenAI, custom endpoints
+
+## Feedback
+
+Found a bug or have a suggestion? Please report it:
+- **GitHub Issues**: [github.com/YourRepo/billyprints/issues](https://github.com/YourRepo/billyprints/issues)
+- **Include**: Error message, prompt used, expected vs actual behavior

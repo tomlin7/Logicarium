@@ -92,9 +92,24 @@ end
 ```
 
 **Primitive Operations:**
-- `a AND b` - Logical AND
-- `NOT a` - Logical NOT
-- `GateName(args)` - Call a previously defined or loaded custom gate
+- `signal = a AND b` - Logical AND of two signals
+- `signal = a OR b` - Logical OR (uses OR gate if defined, otherwise built from AND/NOT)
+- `signal = NOT a` - Logical NOT of one signal
+- `signal = GateName(args)` - Call a previously defined or loaded custom gate
+
+**Nested Expressions:**
+You can combine operators using parentheses:
+```
+out = NOT (a AND b)           // ✓ NAND operation
+out = NOT (NOT a AND NOT b)   // ✓ OR from primitives
+out = NOT (a OR b)            // ✓ NOR operation
+```
+
+Or use intermediate signals for clarity:
+```
+temp = a AND b
+out = NOT temp
+```
 
 **Example - Building an OR gate:**
 ```
@@ -120,15 +135,28 @@ end
 XOR gate1 @ 200, 100
 In sw1 @ 50, 50
 In sw2 @ 50, 150
+Out led1 @ 350, 150
 
-sw1 -> gate1.in0
-sw2 -> gate1.in1
+// Both styles work - named pins or indexed pins:
+sw1.out -> gate1.a       // using defined name
+sw2.out -> gate1.b       // using defined name
+// OR equivalently:
+// sw1.out -> gate1.in0  // using indexed name
+// sw2.out -> gate1.in1  // using indexed name
+
+gate1.out -> led1.in
 ```
 
 **Rules:**
 - Gates must be defined before they are used
-- Nested calls are not allowed; use intermediate signals
-- Input/output order determines slot numbering (`in0`, `in1`, `out0`, `out1`)
+- Use parentheses to group nested expressions
+
+**Pin Naming:**
+When you define a gate like `define XOR(a, b) -> (out)`, you can connect to it using either:
+- **Named pins:** `xor1.a`, `xor1.b` (the parameter names from the definition)
+- **Indexed pins:** `xor1.in0`, `xor1.in1` (based on parameter order)
+
+Both are equivalent - `a` maps to `in0`, `b` maps to `in1`, etc.
 
 For detailed tutorials, see [Custom Gate Definitions](/docs/custom-gate-definitions).
 

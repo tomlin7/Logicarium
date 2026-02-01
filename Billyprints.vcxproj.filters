@@ -4,6 +4,9 @@
     <Filter Include="billyprints">
       <UniqueIdentifier>{E10A55E1-4DC0-CDD6-D6B4-C7AD4269C4DA}</UniqueIdentifier>
     </Filter>
+    <Filter Include="billyprints\AI">
+      <UniqueIdentifier>{DAFB2CE3-C6C9-20E9-AF5D-910F9BCAFC4D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="billyprints\Editor">
       <UniqueIdentifier>{F7201472-E304-D5C7-4C65-CF1A3868BF49}</UniqueIdentifier>
     </Filter>
@@ -33,6 +36,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="billyprints\AI\AIAssistant.hpp">
+      <Filter>billyprints\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="billyprints\AI\AnthropicProvider.hpp">
+      <Filter>billyprints\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="billyprints\AI\ConfigManager.hpp">
+      <Filter>billyprints\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="billyprints\AI\HTTPClient.hpp">
+      <Filter>billyprints\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="billyprints\AI\SystemPrompt.hpp">
+      <Filter>billyprints\AI</Filter>
+    </ClInclude>
     <ClInclude Include="billyprints\Billyprints.hpp">
       <Filter>billyprints</Filter>
     </ClInclude>
@@ -137,6 +155,18 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="billyprints\AI\AIAssistant.cpp">
+      <Filter>billyprints\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="billyprints\AI\AnthropicProvider.cpp">
+      <Filter>billyprints\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="billyprints\AI\ConfigManager.cpp">
+      <Filter>billyprints\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="billyprints\AI\HTTPClient.cpp">
+      <Filter>billyprints\AI</Filter>
+    </ClCompile>
     <ClCompile Include="billyprints\Billyprints.cpp">
       <Filter>billyprints</Filter>
     </ClCompile>
@@ -144,6 +174,9 @@
       <Filter>billyprints\Editor</Filter>
     </ClCompile>
     <ClCompile Include="billyprints\Editor\NodeEditor.cpp">
+      <Filter>billyprints\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="billyprints\Editor\NodeEditor_AI.cpp">
       <Filter>billyprints\Editor</Filter>
     </ClCompile>
     <ClCompile Include="billyprints\Editor\NodeEditor_Gates.cpp">

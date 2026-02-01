@@ -5,6 +5,12 @@
 #include "Nodes.hpp"
 #include <filesystem>
 #include <set>
+#include <memory>
+
+// Forward declarations
+namespace Billyprints {
+  class AIAssistant;
+}
 
 namespace Billyprints {
 class NodeEditor {
@@ -59,6 +65,15 @@ class NodeEditor {
   void UpdateScriptFromNodes();
   void UpdateNodesFromScript();
 
+  // AI Assistant
+  std::unique_ptr<AIAssistant> aiAssistant;
+  char aiPromptBuf[512] = "";
+  bool aiSectionCollapsed = false;
+  std::string pendingAIScript;
+  std::string lastAIPrompt;
+  char scriptBuf[8192] = ""; // Script editor buffer
+  void RenderAIAssistant();
+
   bool openSaveGatePopup = false;
   bool openLoadGatePopup = false;
   bool openSaveScenePopup = false;
@@ -81,6 +96,7 @@ class NodeEditor {
 
 public:
   NodeEditor();
+  ~NodeEditor();
   void Redraw();
 };
 } // namespace Billyprints

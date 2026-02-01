@@ -40,18 +40,26 @@ project "Billyprints"
         "libs/glfw/include",
         "libs/imgui",
         "libs/imnodes",
-        "libs/backends"
+        "libs/backends",
+        "libs/cpp-httplib",
+        "libs/nlohmann",
+        "C:/Users/BIT/scoop/apps/openssl/current/include"
     }
 
     libdirs {
-        "libs/glfw/lib-vc2010-64"
+        "libs/glfw/lib-vc2010-64",
+        "C:/Users/BIT/scoop/apps/openssl/current/lib"
     }
 
     links {
         "glfw3",
         "opengl32",
         "gdi32",
-        "shell32"
+        "shell32",
+        "ws2_32",
+        "crypt32",
+        "libssl",
+        "libcrypto"
     }
 
     -- pchheader "pch.hpp"
@@ -59,7 +67,7 @@ project "Billyprints"
 
     filter "system:windows"
         systemversion "latest"
-        defines { "_CRT_SECURE_NO_WARNINGS" }
+        defines { "_CRT_SECURE_NO_WARNINGS", "CPPHTTPLIB_OPENSSL_SUPPORT" }
 
     filter "configurations:Debug"
         defines { "DEBUG" }

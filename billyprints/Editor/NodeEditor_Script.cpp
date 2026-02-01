@@ -1,6 +1,7 @@
 #include "../Nodes/Gates/CustomGate.hpp"
 #include "../Nodes/Special/PinIn.hpp"
 #include "NodeEditor.hpp"
+#include <functional>
 #include <iostream>
 #include <map>
 #include <regex>
@@ -129,8 +130,16 @@ static bool ParseGateDefinition(const std::string &defBlock,
   GateDefinition def;
   def.name = gateName;
   def.color = IM_COL32(60, 80, 120, 200); // Default blue-ish color
+  def.inputPinNames = inputs;   // Store original parameter names (a, b, etc.)
+  def.outputPinNames = outputs; // Store original output names (out, etc.)
 
-  std::map<std::string, int> signalToNodeId; // Maps signal name to node ID
+  // Signal tracking: maps signal name to (nodeId, outputSlotName)
+  // Allows accessing multi-output gates via signal.outputName
+  struct Signal {
+    int nodeId;
+    std::string slot; // output slot name
+  };
+  std::map<std::string, Signal> signals;
   int nodeIdCounter = 0;
   float yPos = 0;
 
@@ -143,9 +152,14 @@ static bool ParseGateDefinition(const std::string &defBlock,
     yPos += 60;
     def.nodes.push_back(nd);
     def.inputPinIndices.push_back(nodeIdCounter);
-    signalToNodeId[inputName] = nodeIdCounter;
+    signals[inputName] = {nodeIdCounter, "out"};
     nodeIdCounter++;
   }
+
+  // Create constant nodes for literals 0 and 1
+  // These are PinIn nodes that stay at a fixed value
+  int constLowId = -1;  // Will be created on demand
+  int constHighId = -1;
 
   // Helper lambdas for creating nodes and connections
   auto createNode = [&](const std::string &type, float x, float y) -> int {
@@ -171,115 +185,208 @@ static bool ParseGateDefinition(const std::string &defBlock,
   float gateX = 150;
   float gateY = 0;
 
-  for (const auto &[outSignal, expr] : assignments) {
-    // Parse expression: "in1 OP in2", "NOT in1", or "CustomGate(in1, in2)"
-    std::string gateType;
-    std::string operand1, operand2;
-    std::vector<std::string> callArgs;
+  // Recursive expression parser that handles nested expressions like NOT (a AND b)
+  // Returns Signal (nodeId + output slot), or nodeId=-1 on error
+  std::function<Signal(const std::string&, std::string&)> parseExpr;
+  parseExpr = [&](const std::string& exprIn, std::string& err) -> Signal {
+    std::string expr = exprIn;
+    trimStr(expr);
 
-    // Check for NOT (unary)
-    if (expr.substr(0, 4) == "NOT ") {
-      gateType = "NOT";
-      operand1 = expr.substr(4);
-      trimStr(operand1);
+    // Handle literal 0 - create constant low PinIn
+    if (expr == "0") {
+      if (constLowId < 0) {
+        NodeDefinition nd;
+        nd.type = "In";
+        nd.id = nodeIdCounter;
+        nd.pos = ImVec2(-100, 0);
+        def.nodes.push_back(nd);
+        constLowId = nodeIdCounter++;
+      }
+      return {constLowId, "out"};
     }
-    // Check for AND (binary)
-    else if (expr.find(" AND ") != std::string::npos) {
-      size_t opPos = expr.find(" AND ");
-      gateType = "AND";
-      operand1 = expr.substr(0, opPos);
-      operand2 = expr.substr(opPos + 5);
-      trimStr(operand1);
-      trimStr(operand2);
+
+    // Handle literal 1 - create constant high PinIn (will need special handling)
+    if (expr == "1") {
+      if (constHighId < 0) {
+        // Create a constant high: In -> NOT -> NOT (double invert stays high when In is low)
+        // Actually simpler: just create an In that we'll mark as initially on
+        // For now, use: In with value=true would require special node type
+        // Workaround: NOT(0) = 1
+        if (constLowId < 0) {
+          NodeDefinition nd;
+          nd.type = "In";
+          nd.id = nodeIdCounter;
+          nd.pos = ImVec2(-100, 0);
+          def.nodes.push_back(nd);
+          constLowId = nodeIdCounter++;
+        }
+        int notGate = createNode("NOT", -50, 0);
+        connect(constLowId, "out", notGate, "in");
+        constHighId = notGate;
+      }
+      return {constHighId, "out"};
     }
-    // Check for custom gate call: GateName(arg1, arg2, ...)
-    else if (expr.find('(') != std::string::npos) {
-      size_t parenPos = expr.find('(');
-      size_t closePos = expr.rfind(')'); // Use rfind to get the LAST closing paren
-      if (closePos != std::string::npos && closePos > parenPos) {
-        gateType = expr.substr(0, parenPos);
-        trimStr(gateType);
-        std::string argsStr = expr.substr(parenPos + 1, closePos - parenPos - 1);
-        // Note: nested calls like NAND(NAND(a,a), NAND(b,b)) are NOT supported
-        // Use intermediate signals instead
-        callArgs = splitStr(argsStr, ',');
+
+    // Check for dot notation: signal.outputName (accessing multi-output gate)
+    size_t dotPos = expr.find('.');
+    if (dotPos != std::string::npos) {
+      std::string baseName = expr.substr(0, dotPos);
+      std::string outputName = expr.substr(dotPos + 1);
+      trimStr(baseName);
+      trimStr(outputName);
+      if (signals.count(baseName)) {
+        // Return the same node but with the specified output slot
+        Signal base = signals[baseName];
+        return {base.nodeId, outputName};
       }
     }
-    // Check for passthrough (out = in)
-    else if (!expr.empty() && signalToNodeId.count(expr)) {
-      signalToNodeId[outSignal] = signalToNodeId[expr];
-      continue;
-    } else {
-      errorOut = "Unknown expression: " + expr;
-      return false;
+
+    // Remove outer parentheses if present: (a AND b) -> a AND b
+    while (expr.size() >= 2 && expr[0] == '(' && expr[expr.size()-1] == ')') {
+      int depth = 0;
+      bool matched = true;
+      for (size_t i = 0; i < expr.size() - 1; ++i) {
+        if (expr[i] == '(') depth++;
+        else if (expr[i] == ')') depth--;
+        if (depth == 0 && i > 0) { matched = false; break; }
+      }
+      if (matched) {
+        expr = expr.substr(1, expr.size() - 2);
+        trimStr(expr);
+      } else break;
     }
 
-    int resultNodeId = -1;
-
-    if (gateType == "NOT") {
-      if (!signalToNodeId.count(operand1)) {
-        errorOut = "Unknown signal: " + operand1;
-        return false;
-      }
+    // Check for NOT (unary) - handles both "NOT a" and "NOT (a AND b)"
+    if (expr.size() > 4 && expr.substr(0, 4) == "NOT ") {
+      std::string inner = expr.substr(4);
+      trimStr(inner);
+      Signal innerSig = parseExpr(inner, err);
+      if (innerSig.nodeId < 0) return {-1, ""};
       int notGate = createNode("NOT", gateX, gateY);
       gateY += 50;
-      connect(signalToNodeId[operand1], "out", notGate, "in");
-      resultNodeId = notGate;
-
-    } else if (gateType == "AND") {
-      if (!signalToNodeId.count(operand1)) {
-        errorOut = "Unknown signal: " + operand1;
-        return false;
-      }
-      if (!signalToNodeId.count(operand2)) {
-        errorOut = "Unknown signal: " + operand2;
-        return false;
-      }
-      int andGate = createNode("AND", gateX, gateY);
-      gateY += 50;
-      connect(signalToNodeId[operand1], "out", andGate, "in0");
-      connect(signalToNodeId[operand2], "out", andGate, "in1");
-      resultNodeId = andGate;
-
-    } else if (!callArgs.empty()) {
-      // Custom gate call - check if gate exists in registry
-      if (!CustomGate::GateRegistry.count(gateType)) {
-        errorOut = "Unknown gate type: " + gateType +
-                   " (make sure to load the gate library first, or define it earlier in the script)";
-        return false;
-      }
-
-      // Validate arguments - no nested calls allowed
-      for (const auto &arg : callArgs) {
-        if (arg.find('(') != std::string::npos || arg.find(')') != std::string::npos) {
-          errorOut = "Nested gate calls not supported. Use intermediate signals instead. "
-                     "Example: t1 = NAND(a, a) then out = NAND(t1, t2)";
-          return false;
-        }
-      }
-
-      // Create the custom gate node
-      int customGate = createNode(gateType, gateX, gateY);
-      gateY += 60;
-
-      // Connect arguments to inputs
-      const auto &gateDef = CustomGate::GateRegistry[gateType];
-      for (size_t i = 0; i < callArgs.size() && i < gateDef.inputPinIndices.size(); ++i) {
-        if (!signalToNodeId.count(callArgs[i])) {
-          errorOut = "Unknown signal: " + callArgs[i] + " in call to " + gateType;
-          return false;
-        }
-        std::string inSlot = (gateDef.inputPinIndices.size() == 1) ? "in" : "in" + std::to_string(i);
-        connect(signalToNodeId[callArgs[i]], "out", customGate, inSlot);
-      }
-      resultNodeId = customGate;
-
-    } else {
-      errorOut = "Invalid expression: " + expr;
-      return false;
+      connect(innerSig.nodeId, innerSig.slot, notGate, "in");
+      return {notGate, "out"};
     }
 
-    signalToNodeId[outSignal] = resultNodeId;
+    // Check for AND (binary) - find AND not inside parentheses
+    {
+      int depth = 0;
+      for (size_t i = 0; i + 5 <= expr.size(); ++i) {
+        if (expr[i] == '(') depth++;
+        else if (expr[i] == ')') depth--;
+        else if (depth == 0 && expr.substr(i, 5) == " AND ") {
+          std::string left = expr.substr(0, i);
+          std::string right = expr.substr(i + 5);
+          trimStr(left);
+          trimStr(right);
+          Signal leftSig = parseExpr(left, err);
+          if (leftSig.nodeId < 0) return {-1, ""};
+          Signal rightSig = parseExpr(right, err);
+          if (rightSig.nodeId < 0) return {-1, ""};
+          int andGate = createNode("AND", gateX, gateY);
+          gateY += 50;
+          connect(leftSig.nodeId, leftSig.slot, andGate, "in0");
+          connect(rightSig.nodeId, rightSig.slot, andGate, "in1");
+          return {andGate, "out"};
+        }
+      }
+    }
+
+    // Check for OR (binary) - find OR not inside parentheses
+    {
+      int depth = 0;
+      for (size_t i = 0; i + 4 <= expr.size(); ++i) {
+        if (expr[i] == '(') depth++;
+        else if (expr[i] == ')') depth--;
+        else if (depth == 0 && expr.substr(i, 4) == " OR ") {
+          std::string left = expr.substr(0, i);
+          std::string right = expr.substr(i + 4);
+          trimStr(left);
+          trimStr(right);
+          Signal leftSig = parseExpr(left, err);
+          if (leftSig.nodeId < 0) return {-1, ""};
+          Signal rightSig = parseExpr(right, err);
+          if (rightSig.nodeId < 0) return {-1, ""};
+          // Check if OR is defined as custom gate
+          if (CustomGate::GateRegistry.count("OR")) {
+            int orGate = createNode("OR", gateX, gateY);
+            gateY += 60;
+            const auto &gateDef = CustomGate::GateRegistry["OR"];
+            std::string in0Slot = (gateDef.inputPinIndices.size() == 1) ? "in" : "in0";
+            std::string in1Slot = (gateDef.inputPinIndices.size() == 1) ? "in" : "in1";
+            connect(leftSig.nodeId, leftSig.slot, orGate, in0Slot);
+            connect(rightSig.nodeId, rightSig.slot, orGate, in1Slot);
+            return {orGate, "out"};
+          }
+          // Build OR from NOT and AND: OR(a,b) = NOT(NOT a AND NOT b)
+          int notLeft = createNode("NOT", gateX, gateY); gateY += 50;
+          connect(leftSig.nodeId, leftSig.slot, notLeft, "in");
+          int notRight = createNode("NOT", gateX, gateY); gateY += 50;
+          connect(rightSig.nodeId, rightSig.slot, notRight, "in");
+          int andGate = createNode("AND", gateX, gateY); gateY += 50;
+          connect(notLeft, "out", andGate, "in0");
+          connect(notRight, "out", andGate, "in1");
+          int notResult = createNode("NOT", gateX, gateY); gateY += 50;
+          connect(andGate, "out", notResult, "in");
+          return {notResult, "out"};
+        }
+      }
+    }
+
+    // Check for custom gate call: GateName(arg1, arg2, ...)
+    size_t parenPos = expr.find('(');
+    if (parenPos != std::string::npos && parenPos > 0) {
+      size_t closePos = expr.rfind(')');
+      if (closePos != std::string::npos && closePos > parenPos) {
+        std::string gateType = expr.substr(0, parenPos);
+        trimStr(gateType);
+        std::string argsStr = expr.substr(parenPos + 1, closePos - parenPos - 1);
+        std::vector<std::string> callArgs = splitStr(argsStr, ',');
+
+        if (!CustomGate::GateRegistry.count(gateType)) {
+          err = "Unknown gate type: " + gateType;
+          return {-1, ""};
+        }
+
+        // Recursively parse each argument
+        std::vector<Signal> argSigs;
+        for (const auto &arg : callArgs) {
+          Signal argSig = parseExpr(arg, err);
+          if (argSig.nodeId < 0) return {-1, ""};
+          argSigs.push_back(argSig);
+        }
+
+        int customGate = createNode(gateType, gateX, gateY);
+        gateY += 60;
+
+        const auto &gateDef = CustomGate::GateRegistry[gateType];
+        for (size_t i = 0; i < argSigs.size() && i < gateDef.inputPinIndices.size(); ++i) {
+          std::string inSlot = (gateDef.inputPinIndices.size() == 1) ? "in" : "in" + std::to_string(i);
+          connect(argSigs[i].nodeId, argSigs[i].slot, customGate, inSlot);
+        }
+        // Default to first output slot
+        std::string outSlot = (gateDef.outputPinIndices.size() == 1) ? "out" : "out0";
+        return {customGate, outSlot};
+      }
+    }
+
+    // Must be a signal reference
+    if (signals.count(expr)) {
+      return signals[expr];
+    }
+
+    err = "Unknown signal: " + expr;
+    return {-1, ""};
+  };
+
+  for (const auto &[outSignal, expr] : assignments) {
+    std::string parseErr;
+    Signal resultSig = parseExpr(expr, parseErr);
+    if (resultSig.nodeId < 0) {
+      errorOut = parseErr;
+      return false;
+    }
+    signals[outSignal] = resultSig;
   }
 
   // Create PinOut nodes for each output
@@ -295,10 +402,10 @@ static bool ParseGateDefinition(const std::string &defBlock,
     def.outputPinIndices.push_back(nodeIdCounter);
 
     // Connect the signal to this output
-    if (signalToNodeId.count(outputName)) {
+    if (signals.count(outputName)) {
       ConnectionDefinition cd;
-      cd.outputNodeId = signalToNodeId[outputName];
-      cd.outputSlot = "out";
+      cd.outputNodeId = signals[outputName].nodeId;
+      cd.outputSlot = signals[outputName].slot;
       cd.inputNodeId = nodeIdCounter;
       cd.inputSlot = "in";
       def.connections.push_back(cd);
@@ -423,6 +530,44 @@ void NodeEditor::UpdateScriptFromNodes() {
   currentScript = ss.str();
 }
 
+// Helper to resolve a slot name for a custom gate
+// Accepts both named pins (a, b) and indexed pins (in0, in1)
+// Returns the actual slot name used by the node (in0, in1, etc.)
+static std::string ResolveSlotName(Node* node, const std::string& slotName, bool isInput) {
+  // Check if this is a custom gate
+  if (CustomGate::GateRegistry.count(node->title)) {
+    const auto& def = CustomGate::GateRegistry[node->title];
+
+    if (isInput) {
+      // Check if slotName matches a defined input name (a, b, etc.)
+      for (size_t i = 0; i < def.inputPinNames.size(); ++i) {
+        if (def.inputPinNames[i] == slotName) {
+          // Map to indexed slot name
+          if (def.inputPinNames.size() == 1)
+            return "in";
+          else
+            return "in" + std::to_string(i);
+        }
+      }
+    } else {
+      // Check if slotName matches a defined output name
+      for (size_t i = 0; i < def.outputPinNames.size(); ++i) {
+        if (def.outputPinNames[i] == slotName) {
+          // Map to indexed slot name
+          if (def.outputPinNames.size() == 1)
+            return "out";
+          else
+            return "out" + std::to_string(i);
+        }
+      }
+    }
+  }
+
+  // Not a custom gate or slot name didn't match defined names
+  // Return as-is (might be in0, in1, out, etc.)
+  return slotName;
+}
+
 void NodeEditor::UpdateNodesFromScript() {
   if (currentScript == lastParsedScript)
     return;
@@ -496,30 +641,34 @@ void NodeEditor::UpdateNodesFromScript() {
           Node *outNode = idToNode[outS.first];
           Node *inNode = idToNode[inS.first];
 
+          // Resolve slot names (translates named pins like "a" to indexed "in0")
+          std::string resolvedOutSlot = ResolveSlotName(outNode, outS.second, false);
+          std::string resolvedInSlot = ResolveSlotName(inNode, inS.second, true);
+
           bool outSlotValid = false;
-          if (outS.second == "out" && std::string(outNode->title) == "In")
+          if (resolvedOutSlot == "out" && std::string(outNode->title) == "In")
             outSlotValid = true;
           else {
             for (int i = 0; i < outNode->outputSlotCount; ++i)
-              if (std::string(outNode->outputSlots[i].title) == outS.second)
+              if (std::string(outNode->outputSlots[i].title) == resolvedOutSlot)
                 outSlotValid = true;
           }
 
           bool inSlotValid = false;
-          if (inS.second == "in" && std::string(inNode->title) == "Out")
+          if (resolvedInSlot == "in" && std::string(inNode->title) == "Out")
             inSlotValid = true;
           else {
             for (int i = 0; i < inNode->inputSlotCount; ++i)
-              if (std::string(inNode->inputSlots[i].title) == inS.second)
+              if (std::string(inNode->inputSlots[i].title) == resolvedInSlot)
                 inSlotValid = true;
           }
 
           if (outSlotValid && inSlotValid) {
             Connection conn;
             conn.outputNode = outNode;
-            conn.outputSlot = outS.second;
+            conn.outputSlot = resolvedOutSlot;
             conn.inputNode = inNode;
-            conn.inputSlot = inS.second;
+            conn.inputSlot = resolvedInSlot;
             outNode->connections.push_back(conn);
             inNode->connections.push_back(conn);
           }

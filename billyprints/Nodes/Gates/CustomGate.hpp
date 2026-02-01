@@ -28,6 +28,8 @@ struct GateDefinition {
   std::vector<ConnectionDefinition> connections;
   std::vector<int> inputPinIndices;  // IDs of PinIn nodes in 'nodes' vector
   std::vector<int> outputPinIndices; // IDs of PinOut nodes in 'nodes' vector
+  std::vector<std::string> inputPinNames;  // Original parameter names (a, b, etc.)
+  std::vector<std::string> outputPinNames; // Original output names (out, result, etc.)
   ImU32 color = IM_COL32(50, 50, 50, 200); // Default dark grey
 };
 

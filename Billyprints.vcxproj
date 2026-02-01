@@ -58,8 +58,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>billyprints;billyprints\Nodes;billyprints\Nodes\Gates;billyprints\Nodes\Special;billyprints\Editor;libs\glfw\include;libs\imgui;libs\imnodes;libs\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CPPHTTPLIB_OPENSSL_SUPPORT;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>billyprints;billyprints\Nodes;billyprints\Nodes\Gates;billyprints\Nodes\Special;billyprints\Editor;libs\glfw\include;libs\imgui;libs\imnodes;libs\backends;libs\cpp-httplib;libs\nlohmann;..\..\..\scoop\apps\openssl\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -69,16 +69,16 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>libs\glfw\lib-vc2010-64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;gdi32.lib;shell32.lib;ws2_32.lib;crypt32.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>libs\glfw\lib-vc2010-64;..\..\..\scoop\apps\openssl\current\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>billyprints;billyprints\Nodes;billyprints\Nodes\Gates;billyprints\Nodes\Special;billyprints\Editor;libs\glfw\include;libs\imgui;libs\imnodes;libs\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CPPHTTPLIB_OPENSSL_SUPPORT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>billyprints;billyprints\Nodes;billyprints\Nodes\Gates;billyprints\Nodes\Special;billyprints\Editor;libs\glfw\include;libs\imgui;libs\imnodes;libs\backends;libs\cpp-httplib;libs\nlohmann;..\..\..\scoop\apps\openssl\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -92,11 +92,16 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>libs\glfw\lib-vc2010-64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;gdi32.lib;shell32.lib;ws2_32.lib;crypt32.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>libs\glfw\lib-vc2010-64;..\..\..\scoop\apps\openssl\current\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="billyprints\AI\AIAssistant.hpp" />
+    <ClInclude Include="billyprints\AI\AnthropicProvider.hpp" />
+    <ClInclude Include="billyprints\AI\ConfigManager.hpp" />
+    <ClInclude Include="billyprints\AI\HTTPClient.hpp" />
+    <ClInclude Include="billyprints\AI\SystemPrompt.hpp" />
     <ClInclude Include="billyprints\Billyprints.hpp" />
     <ClInclude Include="billyprints\Editor\Connection.hpp" />
     <ClInclude Include="billyprints\Editor\NodeEditor.hpp" />
@@ -133,9 +138,14 @@
     <ClInclude Include="libs\imnodes\ImNodesEz.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="billyprints\AI\AIAssistant.cpp" />
+    <ClCompile Include="billyprints\AI\AnthropicProvider.cpp" />
+    <ClCompile Include="billyprints\AI\ConfigManager.cpp" />
+    <ClCompile Include="billyprints\AI\HTTPClient.cpp" />
     <ClCompile Include="billyprints\Billyprints.cpp" />
     <ClCompile Include="billyprints\Editor\Connection.cpp" />
     <ClCompile Include="billyprints\Editor\NodeEditor.cpp" />
+    <ClCompile Include="billyprints\Editor\NodeEditor_AI.cpp" />
     <ClCompile Include="billyprints\Editor\NodeEditor_Gates.cpp" />
     <ClCompile Include="billyprints\Editor\NodeEditor_Script.cpp" />
     <ClCompile Include="billyprints\Nodes\Gates.cpp" />

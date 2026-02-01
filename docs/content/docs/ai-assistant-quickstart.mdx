@@ -1,0 +1,111 @@
+---
+title: AI Assistant - Quick Start
+description: Get started with the AI Assistant in 3 minutes
+---
+
+# AI Assistant - Quick Start Guide
+
+Get started with the Billyprints AI Assistant in 3 minutes.
+
+## Prerequisites
+
+- OpenSSL installed (for HTTPS support)
+- Anthropic API key
+
+## Step 1: Get API Key
+
+1. Go to [console.anthropic.com](https://console.anthropic.com)
+2. Sign up or log in
+3. Navigate to "API Keys"
+4. Click "Create Key"
+5. Copy the key (starts with `sk-ant-api03-`)
+
+## Step 2: Create Config File
+
+Create `ai_config.json` in the same folder as `Billyprints.exe`:
+
+```json
+{
+  "provider": "anthropic",
+  "endpoint": "https://api.anthropic.com/v1/messages",
+  "apiKey": "sk-ant-api03-YOUR_KEY_HERE",
+  "model": "claude-3-5-sonnet-20241022",
+  "maxTokens": 4096,
+  "temperature": 0.7
+}
+```
+
+**Replace `YOUR_KEY_HERE` with your actual API key!**
+
+## Step 3: Use the AI Assistant
+
+1. Launch Billyprints
+2. Press **Tab** to open the Script Panel
+3. Scroll to the bottom to find **AI Assistant**
+4. Enter a prompt like: `"Create a simple AND gate circuit"`
+5. Click **Send**
+6. Wait for the response
+7. Click **Accept** to apply the code
+
+## Example Prompts
+
+### Basic
+- `Create a 2-input AND gate`
+- `Make an output LED`
+- `Build a NOT gate inverter`
+
+### Intermediate
+- `Create a half adder circuit`
+- `Build an XOR gate from AND and NOT gates`
+- `Make a 2-to-1 multiplexer`
+
+### Advanced
+- `Create a 4-bit ripple carry adder`
+- `Build an SR latch using NAND gates`
+- `Design a 3-bit binary counter`
+
+## Troubleshooting
+
+### "Invalid API key"
+- Check `ai_config.json` exists in the correct folder
+- Verify the API key is correct (no extra spaces)
+- Ensure the JSON is valid (use a JSON validator)
+
+### "Connection failed"
+- Check internet connection
+- Verify OpenSSL is installed
+- Check firewall settings
+
+### "HTTPS not supported"
+- Install OpenSSL: `scoop install openssl` (Windows)
+- Rebuild Billyprints with OpenSSL support
+
+## Tips
+
+1. **Start simple**: Test with a basic circuit first
+2. **Be specific**: Clear prompts get better results
+3. **Review before accepting**: Check the generated code
+4. **Iterate**: Build complex circuits step by step
+5. **Use context**: The AI sees your current script
+
+## Cost Estimate
+
+Typical costs per request:
+- Simple circuit: $0.01 - $0.03
+- Medium circuit: $0.03 - $0.05
+- Complex circuit: $0.05 - $0.10
+
+Monitor your usage at [console.anthropic.com](https://console.anthropic.com)
+
+## Next Steps
+
+- Read the [full AI Assistant documentation](/docs/ai-assistant)
+- Learn about [Custom Gate Definitions](/docs/custom-gate-definitions)
+- Explore [DSL Reference](/docs/dsl-reference)
+- Check out [Examples](/docs/examples)
+
+## Need Help?
+
+- Check the [FAQ](/docs/faq)
+- See [Troubleshooting](/docs/troubleshooting)
+- Report issues on GitHub

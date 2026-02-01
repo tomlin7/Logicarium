@@ -1,0 +1,9 @@
+[requires]
+glfw/3.4
+imgui/1.91.5
+nlohmann_json/3.11.3
+cpp-httplib/0.16.0
+openssl/3.3.0
+
+[generators]
+PremakeDeps

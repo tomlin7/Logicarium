@@ -3,6 +3,7 @@
 #endif
 
 #include "NodeEditor.hpp"
+#include "AI/AIAssistant.hpp"
 #include <imgui_internal.h>
 #include <map>
 #include <string>
@@ -478,6 +479,11 @@ inline void NodeEditor::RenderContextMenu() {
 }
 
 void NodeEditor::Redraw() {
+  // Update AI assistant streaming
+  if (aiAssistant) {
+    aiAssistant->Update();
+  }
+
   nodeHoveredForContextMenu = false;
 
   // Handle global interaction requests
@@ -1020,7 +1026,7 @@ void NodeEditor::Redraw() {
       UpdateScriptFromNodes();
     }
 
-    static char scriptBuf[8192];
+    // scriptBuf is now a member variable
     static bool bufferInitialized = false;
     if (!scriptActive || !bufferInitialized) {
       strncpy(scriptBuf, currentScript.c_str(), 8191);
@@ -1051,6 +1057,10 @@ void NodeEditor::Redraw() {
         ImGui::EndChild();
       }
     } // End of !scriptError.empty()
+
+    // AI Assistant Section
+    RenderAIAssistant();
+
     ImGui::EndChild();
     ImGui::PopStyleVar(2); // ItemSpacing, WindowPadding
     ImGui::Columns(1);
@@ -1249,5 +1259,13 @@ void NodeEditor::RenderConnectionDropMenu() {
   }
 }
 
-NodeEditor::NodeEditor() {}
+NodeEditor::NodeEditor() {
+  // Initialize AI Assistant
+  aiAssistant = std::make_unique<AIAssistant>();
+  aiAssistant->LoadConfig("ai_config.json");
+}
+
+NodeEditor::~NodeEditor() {
+  // Destructor needed for unique_ptr<AIAssistant> with forward declaration
+}
 } // namespace Billyprints
