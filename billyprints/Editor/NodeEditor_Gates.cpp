@@ -35,14 +35,42 @@ void NodeEditor::CreateGate() {
     nd.pos = node->pos;
 
     nd.type = node->title;
-
     def.nodes.push_back(nd);
+  }
 
-    std::string titleStr = node->title;
-    if (titleStr == "Input" || titleStr == "In")
-      def.inputPinIndices.push_back(nd.id);
-    else if (titleStr == "Output" || titleStr == "Out")
-      def.outputPinIndices.push_back(nd.id);
+  // Collect pins separately to sort them by vertical position
+  struct PinSort {
+    int index;
+    float y;
+    std::string name;
+  };
+  std::vector<PinSort> inputs;
+  std::vector<PinSort> outputs;
+
+  for (size_t i = 0; i < nodes.size(); i++) {
+    std::string titleStr = nodes[i]->title;
+    if (titleStr == "Input" || titleStr == "In") {
+      inputs.push_back({(int)i, nodes[i]->pos.y, nodes[i]->id});
+    } else if (titleStr == "Output" || titleStr == "Out") {
+      outputs.push_back({(int)i, nodes[i]->pos.y, nodes[i]->id});
+    }
+  }
+
+  // Sort by Y position (top-to-bottom)
+  auto ySorter = [](const PinSort &a, const PinSort &b) { return a.y < b.y; };
+  std::sort(inputs.begin(), inputs.end(), ySorter);
+  std::sort(outputs.begin(), outputs.end(), ySorter);
+
+  // Populate indices and custom names
+  for (const auto &pin : inputs) {
+    def.inputPinIndices.push_back(pin.index);
+    // Use the node ID as the slot name, or default if empty
+    def.inputPinNames.push_back(pin.name.empty() ? "in" : pin.name);
+  }
+  for (const auto &pin : outputs) {
+    def.outputPinIndices.push_back(pin.index);
+    // Use the node ID as the slot name, or default if empty
+    def.outputPinNames.push_back(pin.name.empty() ? "out" : pin.name);
   }
 
   // 2. Collect Connections
@@ -132,6 +160,22 @@ void NodeEditor::SaveGates(const std::string &filename) {
     size_t outPinCount = def.outputPinIndices.size();
     fwrite(&outPinCount, sizeof(size_t), 1, f);
     fwrite(def.outputPinIndices.data(), sizeof(int), outPinCount, f);
+
+    // Save pin names
+    size_t inNameCount = def.inputPinNames.size();
+    fwrite(&inNameCount, sizeof(size_t), 1, f);
+    for (const auto &name : def.inputPinNames) {
+      size_t len = name.size();
+      fwrite(&len, sizeof(size_t), 1, f);
+      fwrite(name.c_str(), 1, len, f);
+    }
+    size_t outNameCount = def.outputPinNames.size();
+    fwrite(&outNameCount, sizeof(size_t), 1, f);
+    for (const auto &name : def.outputPinNames) {
+      size_t len = name.size();
+      fwrite(&len, sizeof(size_t), 1, f);
+      fwrite(name.c_str(), 1, len, f);
+    }
   }
   fclose(f);
 }
@@ -208,6 +252,30 @@ void NodeEditor::LoadGates(const std::string &filename) {
     fread(&outPinCount, sizeof(size_t), 1, f);
     def.outputPinIndices.resize(outPinCount);
     fread(def.outputPinIndices.data(), sizeof(int), outPinCount, f);
+
+    // Load pin names
+    size_t inNameCount = 0;
+    if (fread(&inNameCount, sizeof(size_t), 1, f) == 1) {
+      for (size_t j = 0; j < inNameCount; j++) {
+        size_t len = 0;
+        fread(&len, sizeof(size_t), 1, f);
+        std::string name;
+        name.resize(len);
+        fread(&name[0], 1, len, f);
+        def.inputPinNames.push_back(name);
+      }
+    }
+    size_t outNameCount = 0;
+    if (fread(&outNameCount, sizeof(size_t), 1, f) == 1) {
+      for (size_t j = 0; j < outNameCount; j++) {
+        size_t len = 0;
+        fread(&len, sizeof(size_t), 1, f);
+        std::string name;
+        name.resize(len);
+        fread(&name[0], 1, len, f);
+        def.outputPinNames.push_back(name);
+      }
+    }
 
     def.isTemporary = false; // Loaded gates are permanent
     customGateDefinitions.push_back(def);
