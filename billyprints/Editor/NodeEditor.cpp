@@ -12,11 +12,12 @@
 namespace Billyprints {
 inline void NodeEditor::RenderNode(Node *node) { node->Render(); }
 
-// Global pointers for interaction helpers
 Node *nodeToDuplicate = nullptr;
 Node *nodeToEdit = nullptr;
 Node *nodeToDelete = nullptr;
 Node *nodeToSaveGate = nullptr;
+Node *nodeToRename = nullptr;
+char renameBuf[128] = "";
 bool nodeHoveredForContextMenu = false;
 
 void NodeEditor::RenderDock() {
@@ -727,6 +728,57 @@ void NodeEditor::Redraw() {
 
     ImGui::EndChild();
   };
+
+  // Rename Node Popup
+  static bool renameStarted = false;
+  static bool renameFocusOnce = false;
+  if (nodeToRename && !renameStarted) {
+    ImGui::OpenPopup("RenameNodePopup");
+    strncpy(renameBuf, nodeToRename->id.c_str(), 127);
+    renameBuf[127] = '\0';
+    renameStarted = true;
+    renameFocusOnce = true;
+  }
+
+  if (ImGui::BeginPopupModal("RenameNodePopup", NULL,
+                             ImGuiWindowFlags_AlwaysAutoResize)) {
+    ImGui::Text("Enter new name for pin:");
+
+    if (renameFocusOnce) {
+      ImGui::SetKeyboardFocusHere();
+      renameFocusOnce = false;
+    }
+
+    ImGui::InputText("##rename", renameBuf, 128);
+
+    if (ImGui::Button("Rename", ImVec2(120, 0)) ||
+        ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+      std::string newName = renameBuf;
+      if (!newName.empty() && newName.find(' ') == std::string::npos) {
+        nodeToRename->id = newName;
+        UpdateScriptFromNodes();
+        lastParsedScript = currentScript;
+        strncpy(scriptBuf, currentScript.c_str(), 8191);
+      }
+      nodeToRename = nullptr;
+      renameStarted = false;
+      ImGui::CloseCurrentPopup();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel", ImVec2(120, 0)) ||
+        ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+      nodeToRename = nullptr;
+      renameStarted = false;
+      ImGui::CloseCurrentPopup();
+    }
+    ImGui::EndPopup();
+  } else {
+    // If popup closed by clicking outside or other means
+    if (renameStarted && !ImGui::IsPopupOpen("RenameNodePopup")) {
+      nodeToRename = nullptr;
+      renameStarted = false;
+    }
+  }
 
   // Save Scene Popup
   if (openSaveScenePopup) {

@@ -24,6 +24,11 @@ bool PinOut::Evaluate(const std::string &slot) {
   return value;
 };
 
+extern Node *nodeToDuplicate;
+extern Node *nodeToDelete;
+extern Node *nodeToRename;
+extern bool nodeHoveredForContextMenu;
+
 void PinOut::Render() {
   ImU32 color = GetColor();
   color = (color & 0x00FFFFFF) | 0xFF000000;
@@ -43,7 +48,12 @@ void PinOut::Render() {
   ImNodes::Ez::PushStyleColor(ImNodesStyleCol_NodeBodyBgActive, color);
   ImNodes::Ez::PushStyleColor(ImNodesStyleCol_NodeBorder, borderColor);
 
-  if (ImNodes::Ez::BeginNode(this, "", &pos, &selected)) {
+  // Display ID if available, otherwise "Out"
+  std::string displayTitle = id.empty() ? "Out" : id;
+
+  bool open =
+      ImNodes::Ez::BeginNode(this, displayTitle.c_str(), &pos, &selected);
+  if (open) {
     ImNodes::Ez::InputSlots(inputSlots.data(), inputSlotCount);
 
     bool signal = Evaluate();
@@ -54,9 +64,27 @@ void PinOut::Render() {
     ImGui::PopStyleColor();
 
     ImNodes::Ez::OutputSlots(outputSlots.data(), outputSlotCount);
-    // Connections (PinOut usually has no outgoing connections)
-    ImNodes::Ez::EndNode();
-    ImNodes::Ez::PopStyleColor(7);
+  }
+
+  ImNodes::Ez::EndNode();
+  ImNodes::Ez::PopStyleColor(7);
+
+  if (ImGui::IsItemHovered()) {
+    nodeHoveredForContextMenu = true;
+  }
+
+  if (ImGui::BeginPopupContextItem()) {
+    if (ImGui::MenuItem("Rename")) {
+      nodeToRename = this;
+    }
+    if (ImGui::MenuItem("Duplicate")) {
+      nodeToDuplicate = this;
+    }
+    ImGui::Separator();
+    if (ImGui::MenuItem("Delete", "Del")) {
+      nodeToDelete = this;
+    }
+    ImGui::EndPopup();
   }
 }
 } // namespace Billyprints

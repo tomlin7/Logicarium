@@ -10,6 +10,11 @@ bool PinIn::Evaluate(const std::string &slot) {
   return value;
 };
 
+extern Node *nodeToDuplicate;
+extern Node *nodeToDelete;
+extern Node *nodeToRename;
+extern bool nodeHoveredForContextMenu;
+
 void PinIn::Render() {
   ImU32 color = GetColor();
   color = (color & 0x00FFFFFF) | 0xFF000000;
@@ -29,7 +34,12 @@ void PinIn::Render() {
   ImNodes::Ez::PushStyleColor(ImNodesStyleCol_NodeBodyBgActive, color);
   ImNodes::Ez::PushStyleColor(ImNodesStyleCol_NodeBorder, borderColor);
 
-  if (ImNodes::Ez::BeginNode(this, "", &pos, &selected)) {
+  // Display ID if available, otherwise "In"
+  std::string displayTitle = id.empty() ? "In" : id;
+
+  bool open =
+      ImNodes::Ez::BeginNode(this, displayTitle.c_str(), &pos, &selected);
+  if (open) {
     ImNodes::Ez::InputSlots(inputSlots.data(), inputSlotCount);
 
     ImGui::PushStyleColor(ImGuiCol_Button, value ? ImVec4(0, 0.6f, 0, 1)
@@ -79,9 +89,27 @@ void PinIn::Render() {
       }
       canvas->Colors[ImNodes::ColConnection] = originalConnectionColor;
     }
+  }
 
-    ImNodes::Ez::EndNode();
-    ImNodes::Ez::PopStyleColor(7);
+  ImNodes::Ez::EndNode();
+  ImNodes::Ez::PopStyleColor(7);
+
+  if (ImGui::IsItemHovered()) {
+    nodeHoveredForContextMenu = true;
+  }
+
+  if (ImGui::BeginPopupContextItem()) {
+    if (ImGui::MenuItem("Rename")) {
+      nodeToRename = this;
+    }
+    if (ImGui::MenuItem("Duplicate")) {
+      nodeToDuplicate = this;
+    }
+    ImGui::Separator();
+    if (ImGui::MenuItem("Delete", "Del")) {
+      nodeToDelete = this;
+    }
+    ImGui::EndPopup();
   }
 }
 } // namespace Billyprints
