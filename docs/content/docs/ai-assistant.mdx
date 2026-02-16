@@ -5,12 +5,12 @@ description: Use AI to generate and modify circuit logic with natural language
 
 # AI Assistant
 
-The AI Assistant allows you to create and modify digital logic circuits using natural language. Powered by Claude AI, it understands the Billyprints DSL and can generate complete circuits from simple descriptions.
+The AI Assistant allows you to create and modify digital logic circuits using natural language. Powered by Claude AI, it understands the Logicarium DSL and can generate complete circuits from simple descriptions.
 
 ## Features
 
 - **Natural Language Input**: Describe circuits in plain English
-- **DSL-Aware**: Generates valid Billyprints DSL code
+- **DSL-Aware**: Generates valid Logicarium DSL code
 - **Streaming Responses**: See AI output as it's generated
 - **Accept/Reject Changes**: Review before applying to your circuit
 - **Context-Aware**: Uses your current script as context
@@ -43,9 +43,9 @@ You need a Claude API key from Anthropic:
 3. Create a new API key
 4. Copy the key (starts with `sk-ant-api03-...`)
 
-### 3. Configure Billyprints
+### 3. Configure Logicarium
 
-Create a file named `ai_config.json` in the same directory as `Billyprints.exe`:
+Create a file named `ai_config.json` in the same directory as `Logicarium.exe`:
 
 ```json
 {
@@ -121,7 +121,7 @@ The AI Assistant includes your current script as context:
 
 ```
 Current script:
-```billyprints
+```Logicarium
 [Your existing circuit code]
 ```
 
@@ -136,7 +136,7 @@ This allows it to:
 
 ### DSL Knowledge
 
-The AI is trained on Billyprints DSL syntax:
+The AI is trained on Logicarium DSL syntax:
 
 - **Node Types**: In, Out, AND, NOT, custom gates
 - **Connections**: `source.out -> target.in` syntax
@@ -150,7 +150,7 @@ The AI wraps its output in code fences:
 ````markdown
 I've created a half adder circuit:
 
-```billyprints
+```Logicarium
 define XOR(a, b) -> (out):
   na = NOT a
   nb = NOT b
@@ -176,7 +176,7 @@ carry.out -> carry_out.in
 ```
 ````
 
-Billyprints automatically extracts the code from these fences.
+Logicarium automatically extracts the code from these fences.
 
 ## Configuration Options
 
@@ -225,10 +225,10 @@ Billyprints automatically extracts the code from these fences.
 
 **Solution**:
 1. Install OpenSSL (see Setup section)
-2. Rebuild Billyprints with OpenSSL support:
+2. Rebuild Logicarium with OpenSSL support:
    ```bash
    premake5 vs2022
-   msbuild Billyprints.sln /p:Configuration=Debug /p:Platform=x64
+   msbuild Logicarium.sln /p:Configuration=Debug /p:Platform=x64
    ```
 
 ### "Rate limit exceeded"
@@ -339,12 +339,12 @@ NodeEditor (UI)
 ### System Prompt
 
 The AI uses a detailed system prompt that includes:
-- Billyprints DSL syntax reference
+- Logicarium DSL syntax reference
 - Node types and connection format
 - Custom gate definition rules
 - Examples of common patterns
 
-See `billyprints/AI/SystemPrompt.hpp` for the full prompt.
+See `Logicarium/AI/SystemPrompt.hpp` for the full prompt.
 
 ### Response Processing
 
@@ -360,9 +360,9 @@ See `billyprints/AI/SystemPrompt.hpp` for the full prompt.
 ### File Locations
 
 - **Config**: `ai_config.json` (next to exe)
-- **Source**: `billyprints/AI/` directory
-- **System Prompt**: `billyprints/AI/SystemPrompt.hpp`
-- **UI Code**: `billyprints/Editor/NodeEditor_AI.cpp`
+- **Source**: `Logicarium/AI/` directory
+- **System Prompt**: `Logicarium/AI/SystemPrompt.hpp`
+- **UI Code**: `Logicarium/Editor/NodeEditor_AI.cpp`
 
 ## Future Enhancements
 
@@ -378,5 +378,5 @@ Planned improvements:
 ## Feedback
 
 Found a bug or have a suggestion? Please report it:
-- **GitHub Issues**: [github.com/YourRepo/billyprints/issues](https://github.com/YourRepo/billyprints/issues)
+- **GitHub Issues**: [github.com/YourRepo/Logicarium/issues](https://github.com/YourRepo/Logicarium/issues)
 - **Include**: Error message, prompt used, expected vs actual behavior

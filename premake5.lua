@@ -1,14 +1,14 @@
 require "premake/export-compile-commands"
 
-workspace "Billyprints"
+workspace "Logicarium"
     architecture "x64"
-    startproject "Billyprints"
+    startproject "Logicarium"
 
     configurations { "Debug", "Release" }
 
     outputstr = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-project "Billyprints"
+project "Logicarium"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
@@ -18,9 +18,9 @@ project "Billyprints"
     objdir ("bin-int/" .. outputstr .. "/%{prj.name}")
 
     files {
-        "billyprints/**.h",
-        "billyprints/**.hpp",
-        "billyprints/**.cpp",
+        "logicarium/**.h",
+        "logicarium/**.hpp",
+        "logicarium/**.cpp",
         "libs/imgui/*.h",
         "libs/imgui/*.hpp",
         "libs/imgui/*.cpp",
@@ -32,15 +32,15 @@ project "Billyprints"
     }
 
     removefiles {
-        "billyprints/Nodes/Gates/legacy/**"
+        "logicarium/Nodes/Gates/legacy/**"
     }
 
     includedirs {
-        "billyprints",
-        "billyprints/Nodes",
-        "billyprints/Nodes/Gates",
-        "billyprints/Nodes/Special",
-        "billyprints/Editor",
+        "logicarium",
+        "logicarium/Nodes",
+        "logicarium/Nodes/Gates",
+        "logicarium/Nodes/Special",
+        "logicarium/Editor",
         "libs/glfw/include",
         "libs/imgui",
         "libs/imnodes",
@@ -67,7 +67,7 @@ project "Billyprints"
     }
 
     -- pchheader "pch.hpp"
-    -- pchsource "billyprints/pch.cpp"
+    -- pchsource "logicarium/pch.cpp"
 
     filter "system:windows"
         systemversion "latest"

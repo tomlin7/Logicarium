@@ -10,10 +10,10 @@ imgui.ini
 *.o
 *.obj
 *.exe
-/billyprints/build/*
-/billyprints/Debug/*
-/billyprints/Release/*
-/billyprints/x64/*
+/logicarium/build/*
+/logicarium/Debug/*
+/logicarium/Release/*
+/logicarium/x64/*
 
 ## Visual Studio artifacts
 .vs

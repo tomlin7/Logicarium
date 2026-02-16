@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="libs">
+      <UniqueIdentifier>{2F149A7C-1B4B-9B0D-C437-8110B04D170F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\backends">
+      <UniqueIdentifier>{39B3B6C8-A573-32FF-6EAE-7B7CDA2D77DB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\imgui">
+      <UniqueIdentifier>{D948162C-C500-5879-2E08-31D51ADFF269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\imnodes">
+      <UniqueIdentifier>{8D3C478B-799F-D62F-2225-0FE60E67A2B2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logicarium">
+      <UniqueIdentifier>{D1FA41FB-BDB2-8348-26BA-5CA412911E39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logicarium\AI">
+      <UniqueIdentifier>{CA252B49-36E6-A67F-FF20-F0FC6BA0EB5B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logicarium\Editor">
+      <UniqueIdentifier>{E7C2F59D-53D9-F333-9C50-7F5508A6C4BB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logicarium\Nodes">
+      <UniqueIdentifier>{59950553-458E-24A5-6EC0-092A5A1804B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logicarium\Nodes\Gates">
+      <UniqueIdentifier>{1CE1FE9D-08DB-27F0-F147-BE00DDE08D5C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logicarium\Nodes\Special">
+      <UniqueIdentifier>{A92CE3D6-9551-3257-BE9C-17E7AA203175}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="libs\backends\imgui_impl_glfw.hpp">
+      <Filter>libs\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\backends\imgui_impl_opengl3.hpp">
+      <Filter>libs\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\backends\imgui_impl_opengl3_loader.hpp">
+      <Filter>libs\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imconfig.h">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imconfig.hpp">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imgui.h">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imgui.hpp">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imgui_internal.h">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imgui_internal.hpp">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imstb_rectpack.hpp">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imstb_textedit.hpp">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imstb_truetype.hpp">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imnodes\ImNodes.h">
+      <Filter>libs\imnodes</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imnodes\ImNodesEz.h">
+      <Filter>libs\imnodes</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\AI\AIAssistant.hpp">
+      <Filter>logicarium\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\AI\AnthropicProvider.hpp">
+      <Filter>logicarium\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\AI\ConfigManager.hpp">
+      <Filter>logicarium\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\AI\HTTPClient.hpp">
+      <Filter>logicarium\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\AI\SystemPrompt.hpp">
+      <Filter>logicarium\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Editor\Connection.hpp">
+      <Filter>logicarium\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Editor\NodeEditor.hpp">
+      <Filter>logicarium\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Logicarium.hpp">
+      <Filter>logicarium</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Gates.hpp">
+      <Filter>logicarium\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Gates\AND.hpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Gates\CustomGate.hpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Gates\Gate.hpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Gates\NOT.hpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Gates\PlaceholderGate.hpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Node.hpp">
+      <Filter>logicarium\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Nodes.hpp">
+      <Filter>logicarium\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Special\PinIn.hpp">
+      <Filter>logicarium\Nodes\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\Nodes\Special\PinOut.hpp">
+      <Filter>logicarium\Nodes\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="logicarium\pch.hpp">
+      <Filter>logicarium</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libs\backends\imgui_impl_glfw.cpp">
+      <Filter>libs\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\backends\imgui_impl_opengl3.cpp">
+      <Filter>libs\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui.cpp">
+      <Filter>libs\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui_draw.cpp">
+      <Filter>libs\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui_tables.cpp">
+      <Filter>libs\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui_widgets.cpp">
+      <Filter>libs\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imnodes\ImNodes.cpp">
+      <Filter>libs\imnodes</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imnodes\ImNodesEz.cpp">
+      <Filter>libs\imnodes</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\AI\AIAssistant.cpp">
+      <Filter>logicarium\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\AI\AnthropicProvider.cpp">
+      <Filter>logicarium\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\AI\ConfigManager.cpp">
+      <Filter>logicarium\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\AI\HTTPClient.cpp">
+      <Filter>logicarium\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Editor\Connection.cpp">
+      <Filter>logicarium\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Editor\NodeEditor.cpp">
+      <Filter>logicarium\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Editor\NodeEditor_AI.cpp">
+      <Filter>logicarium\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Editor\NodeEditor_Gates.cpp">
+      <Filter>logicarium\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Editor\NodeEditor_Script.cpp">
+      <Filter>logicarium\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Logicarium.cpp">
+      <Filter>logicarium</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Gates.cpp">
+      <Filter>logicarium\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Gates\AND.cpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Gates\CustomGate.cpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Gates\Gate.cpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Gates\NOT.cpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Gates\PlaceholderGate.cpp">
+      <Filter>logicarium\Nodes\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Node.cpp">
+      <Filter>logicarium\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Nodes.cpp">
+      <Filter>logicarium\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Special\PinIn.cpp">
+      <Filter>logicarium\Nodes\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\Nodes\Special\PinOut.cpp">
+      <Filter>logicarium\Nodes\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\main.cpp">
+      <Filter>logicarium</Filter>
+    </ClCompile>
+    <ClCompile Include="logicarium\pch.cpp">
+      <Filter>logicarium</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

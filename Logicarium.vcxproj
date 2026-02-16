@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B1D6EF79-9D8E-31C7-0696-0A23F26CCCB7}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Logicarium</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)bin\Debug-windows-x86_64\Logicarium\</OutDir>
+    <IntDir>$(ProjectDir)bin-int\Debug-windows-x86_64\Logicarium\</IntDir>
+    <TargetName>Logicarium</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)bin\Release-windows-x86_64\Logicarium\</OutDir>
+    <IntDir>$(ProjectDir)bin-int\Release-windows-x86_64\Logicarium\</IntDir>
+    <TargetName>Logicarium</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CPPHTTPLIB_OPENSSL_SUPPORT;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>logicarium;logicarium\Nodes;logicarium\Nodes\Gates;logicarium\Nodes\Special;logicarium\Editor;libs\glfw\include;libs\imgui;libs\imnodes;libs\backends;libs\cpp-httplib;libs\nlohmann;..\..\..\scoop\apps\openssl\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;gdi32.lib;shell32.lib;ws2_32.lib;crypt32.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>libs\glfw\lib-vc2010-64;..\..\..\scoop\apps\openssl\current\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CPPHTTPLIB_OPENSSL_SUPPORT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>logicarium;logicarium\Nodes;logicarium\Nodes\Gates;logicarium\Nodes\Special;logicarium\Editor;libs\glfw\include;libs\imgui;libs\imnodes;libs\backends;libs\cpp-httplib;libs\nlohmann;..\..\..\scoop\apps\openssl\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;gdi32.lib;shell32.lib;ws2_32.lib;crypt32.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>libs\glfw\lib-vc2010-64;..\..\..\scoop\apps\openssl\current\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="libs\backends\imgui_impl_glfw.hpp" />
+    <ClInclude Include="libs\backends\imgui_impl_opengl3.hpp" />
+    <ClInclude Include="libs\backends\imgui_impl_opengl3_loader.hpp" />
+    <ClInclude Include="libs\imgui\imconfig.h" />
+    <ClInclude Include="libs\imgui\imconfig.hpp" />
+    <ClInclude Include="libs\imgui\imgui.h" />
+    <ClInclude Include="libs\imgui\imgui.hpp" />
+    <ClInclude Include="libs\imgui\imgui_internal.h" />
+    <ClInclude Include="libs\imgui\imgui_internal.hpp" />
+    <ClInclude Include="libs\imgui\imstb_rectpack.hpp" />
+    <ClInclude Include="libs\imgui\imstb_textedit.hpp" />
+    <ClInclude Include="libs\imgui\imstb_truetype.hpp" />
+    <ClInclude Include="libs\imnodes\ImNodes.h" />
+    <ClInclude Include="libs\imnodes\ImNodesEz.h" />
+    <ClInclude Include="logicarium\AI\AIAssistant.hpp" />
+    <ClInclude Include="logicarium\AI\AnthropicProvider.hpp" />
+    <ClInclude Include="logicarium\AI\ConfigManager.hpp" />
+    <ClInclude Include="logicarium\AI\HTTPClient.hpp" />
+    <ClInclude Include="logicarium\AI\SystemPrompt.hpp" />
+    <ClInclude Include="logicarium\Editor\Connection.hpp" />
+    <ClInclude Include="logicarium\Editor\NodeEditor.hpp" />
+    <ClInclude Include="logicarium\Logicarium.hpp" />
+    <ClInclude Include="logicarium\Nodes\Gates.hpp" />
+    <ClInclude Include="logicarium\Nodes\Gates\AND.hpp" />
+    <ClInclude Include="logicarium\Nodes\Gates\CustomGate.hpp" />
+    <ClInclude Include="logicarium\Nodes\Gates\Gate.hpp" />
+    <ClInclude Include="logicarium\Nodes\Gates\NOT.hpp" />
+    <ClInclude Include="logicarium\Nodes\Gates\PlaceholderGate.hpp" />
+    <ClInclude Include="logicarium\Nodes\Node.hpp" />
+    <ClInclude Include="logicarium\Nodes\Nodes.hpp" />
+    <ClInclude Include="logicarium\Nodes\Special\PinIn.hpp" />
+    <ClInclude Include="logicarium\Nodes\Special\PinOut.hpp" />
+    <ClInclude Include="logicarium\pch.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libs\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="libs\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="libs\imgui\imgui.cpp" />
+    <ClCompile Include="libs\imgui\imgui_draw.cpp" />
+    <ClCompile Include="libs\imgui\imgui_tables.cpp" />
+    <ClCompile Include="libs\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="libs\imnodes\ImNodes.cpp" />
+    <ClCompile Include="libs\imnodes\ImNodesEz.cpp" />
+    <ClCompile Include="logicarium\AI\AIAssistant.cpp" />
+    <ClCompile Include="logicarium\AI\AnthropicProvider.cpp" />
+    <ClCompile Include="logicarium\AI\ConfigManager.cpp" />
+    <ClCompile Include="logicarium\AI\HTTPClient.cpp" />
+    <ClCompile Include="logicarium\Editor\Connection.cpp" />
+    <ClCompile Include="logicarium\Editor\NodeEditor.cpp" />
+    <ClCompile Include="logicarium\Editor\NodeEditor_AI.cpp" />
+    <ClCompile Include="logicarium\Editor\NodeEditor_Gates.cpp" />
+    <ClCompile Include="logicarium\Editor\NodeEditor_Script.cpp" />
+    <ClCompile Include="logicarium\Logicarium.cpp" />
+    <ClCompile Include="logicarium\Nodes\Gates.cpp" />
+    <ClCompile Include="logicarium\Nodes\Gates\AND.cpp" />
+    <ClCompile Include="logicarium\Nodes\Gates\CustomGate.cpp" />
+    <ClCompile Include="logicarium\Nodes\Gates\Gate.cpp" />
+    <ClCompile Include="logicarium\Nodes\Gates\NOT.cpp" />
+    <ClCompile Include="logicarium\Nodes\Gates\PlaceholderGate.cpp" />
+    <ClCompile Include="logicarium\Nodes\Node.cpp" />
+    <ClCompile Include="logicarium\Nodes\Nodes.cpp" />
+    <ClCompile Include="logicarium\Nodes\Special\PinIn.cpp" />
+    <ClCompile Include="logicarium\Nodes\Special\PinOut.cpp" />
+    <ClCompile Include="logicarium\main.cpp" />
+    <ClCompile Include="logicarium\pch.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

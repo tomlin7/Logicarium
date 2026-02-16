@@ -9,8 +9,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Billyprints',
-    template: '%s | Billyprints',
+    default: 'Logicarium',
+    template: '%s | Logicarium',
   },
   description: 'A powerful node-based logic gate editor and simulator. Build digital circuits visually or through code.',
   keywords: ['logic gates', 'circuit simulator', 'digital logic', 'node editor', 'electronics'],

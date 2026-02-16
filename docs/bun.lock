@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "billyprints-docs",
+      "name": "logicarium-docs",
       "dependencies": {
         "@xyflow/react": "^12.10.0",
         "fumadocs-core": "16.4.10",

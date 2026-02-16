@@ -17,7 +17,7 @@ import {
 import "@xyflow/react/dist/style.css";
 
 // =============================================================================
-// DSL Parser - Matches Billyprints C++ parser syntax
+// DSL Parser - Matches Logicarium C++ parser syntax
 // =============================================================================
 
 type ParsedNode = {
@@ -479,7 +479,7 @@ function Dock() {
               />
             ))}
             <a
-              href="https://github.com/tomlin7/BillyPrints/releases"
+              href="https://github.com/tomlin7/Logicarium/releases"
               className="flex items-center"
             >
               <DockItem
@@ -890,19 +890,19 @@ function TopBar() {
       <div className="max-w-5xl mx-auto h-full flex items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="relative">
-            <img src="/logo.gif" alt="Billyprints Logo" className="w-8 h-8 rounded-md relative z-10" />
+            <img src="/logo.gif" alt="Logicarium Logo" className="w-8 h-8 rounded-md relative z-10" />
             <div className="absolute inset-0 bg-[#b8d900]/20 blur-md rounded-full group-hover:bg-[#b8d900]/40 transition-all" />
           </div>
-          <span className="text-[14px] font-bold tracking-tight text-white group-hover:text-[#b8d900] transition-colors">Billyprints</span>
+          <span className="text-[14px] font-bold tracking-tight text-white group-hover:text-[#b8d900] transition-colors">Logicarium</span>
         </Link>
         <nav className="flex items-center gap-6">
           <Link href="#features" className="text-[14px] font-medium text-white/40 hover:text-white transition-colors">Features</Link>
           <Link href="/docs" className="text-[14px] font-medium text-white/40 hover:text-white transition-colors">Docs</Link>
-          <Link href="https://github.com/tomlin7/billyprints" className="text-[14px] font-medium text-white/40 hover:text-white transition-colors">GitHub ↗</Link>
-          {/* <a href="https://github.com/tomlin7/billyprints" className="text-[14px] font-medium text-white/40 hover:text-white transition-colors">Community ↗</a> */}
+          <Link href="https://github.com/tomlin7/Logicarium" className="text-[14px] font-medium text-white/40 hover:text-white transition-colors">GitHub ↗</Link>
+          {/* <a href="https://github.com/tomlin7/Logicarium" className="text-[14px] font-medium text-white/40 hover:text-white transition-colors">Community ↗</a> */}
         </nav>
         <a
-          href="https://github.com/tomlin7/billyprints/releases"
+          href="https://github.com/tomlin7/Logicarium/releases"
           className="bg-[#f0a0ff] text-black px-3 py-1 rounded-md text-[14px] font-bold border-b-2 border-[#d080ff] hover:brightness-105 active:translate-y-[1px] active:border-b-0 transition-all flex items-center gap-1.5"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -920,11 +920,11 @@ function HeroSection() {
     <div className="pt-24 pb-12 max-w-2xl mx-auto px-6 text-center md:text-left">
       {/* <div className="mb-6 flex justify-center md:justify-start">
         <div className="relative">
-          <img src="/logo.gif" alt="Billyprints Logo" className="w-16 h-16 rounded-xl relative z-10 shadow-2xl" />
+          <img src="/logo.gif" alt="Logicarium Logo" className="w-16 h-16 rounded-xl relative z-10 shadow-2xl" />
           <div className="absolute inset-0 bg-[#b8d900]/10 blur-xl rounded-full" />
         </div>
       </div> */}
-      <h1 className="text-[24px] font-bold text-white mb-4 font-mono">Billyprints</h1>
+      <h1 className="text-[24px] font-bold text-white mb-4 font-mono">Logicarium</h1>
 
       <p className="text-[14px] text-white/90 mb-6 leading-relaxed max-w-xl mx-auto md:mx-0 font-mono">
         Run high-performance logic simulations directly in your browser without breaking your flow.
@@ -951,7 +951,7 @@ function HeroSection() {
 
       <div className="flex flex-wrap gap-3 justify-center md:justify-start">
         <a
-          href="https://github.com/tomlin7/billyprints/releases"
+          href="https://github.com/tomlin7/Logicarium/releases"
           className="group relative overflow-hidden bg-[#f0a0ff] text-black px-3 py-2 rounded-md border-b-3 border-[#c766ff] text-[14px] font-bold font-mono hover:brightness-105 active:translate-y-[1px] active:border-b-0 transition-all flex items-center gap-2"
         >
           <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-white/10"></div>
@@ -962,10 +962,10 @@ function HeroSection() {
         </a>
         <button className="bg-transaparent text-white/40 px-3 py-2 rounded-md border-[1px] border-b-3 border-[#ffffff0a] text-[14px] font-bold font-mono hover:bg-white/5 hover:text-white transition-all flex items-center gap-2">
           <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-          <a href="https://github.com/tomlin7/billyprints">View Source Code</a>
+          <a href="https://github.com/tomlin7/Logicarium">View Source Code</a>
         </button>
       </div>
-      <button className="mt-4 text-[12px] font-mono text-white/20 hover:text-white/40 transition-colors"><a href="https://github.com/tomlin7/billyprints/releases">View all versions</a></button>
+      <button className="mt-4 text-[12px] font-mono text-white/20 hover:text-white/40 transition-colors"><a href="https://github.com/tomlin7/Logicarium/releases">View all versions</a></button>
     </div>
   );
 }
@@ -1006,7 +1006,7 @@ function ProductShowcase({
           </nav>
 
           <div className="text-[12px] font-mono font-bold text-white/10 uppercase tracking-[0.2em] hidden md:block">
-            Billyprints
+            Logicarium
           </div>
         </div>
 
@@ -1088,9 +1088,9 @@ function FAQSection() {
       <h2 className="text-[18px] font-bold text-white mb-6">Frequently asked questions</h2>
       <div className="space-y-4">
         {[
-          { q: "Which circuit types does Billyprints support?", a: "Supports combinatorial, sequential, and hybrid digital logic circuits up to 10M gates." },
+          { q: "Which circuit types does Logicarium support?", a: "Supports combinatorial, sequential, and hybrid digital logic circuits up to 10M gates." },
           { q: "How do I use the DSL?", a: "Use the built-in editor to define components. Syntax is similar to Verilog but optimized for rapid drafting." },
-          { q: "What is Billyprints built for?", a: "Academic research, rapid prototyping, and digital logic education where performance matters." }
+          { q: "What is Logicarium built for?", a: "Academic research, rapid prototyping, and digital logic education where performance matters." }
         ].map((item, i) => (
           <details key={i} className="group border-b border-white/5 pb-4">
             <summary className="flex items-center justify-between cursor-pointer list-none text-[14px] text-white/80 hover:text-white transition-colors">
@@ -1107,7 +1107,7 @@ function FAQSection() {
       <div className="mt-12 py-12 text-center border-t border-white/5">
         <p className="text-[18px] text-white/80 mb-5">Ready to design faster?</p>
         <a
-          href="https://github.com/tomlin7/billyprints/releases"
+          href="https://github.com/tomlin7/Logicarium/releases"
           className="inline-block bg-[#f0a0ff] text-black px-6 py-2 rounded-md text-[14px] font-bold border-b-2 border-[#d080ff] hover:brightness-105 active:translate-y-[1px] active:border-b-0 transition-all shadow-xl shadow-pink-500/5"
         >
           Download
@@ -1327,8 +1327,8 @@ function HomePageInner() {
         <div className="max-w-5xl mx-auto flex flex-wrap justify-center gap-x-8 gap-y-4 text-[14px] text-white/30 font-medium">
           <Link href="#" className="hover:text-white transition-colors">Terms</Link>
           <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
-          <a href="https://github.com/tomlin7/billyprints" className="hover:text-white transition-colors">Community ↗</a>
-          <a href="https://github.com/tomlin7/billyprints" className="hover:text-white transition-colors">GitHub ↗</a>
+          <a href="https://github.com/tomlin7/Logicarium" className="hover:text-white transition-colors">Community ↗</a>
+          <a href="https://github.com/tomlin7/Logicarium" className="hover:text-white transition-colors">GitHub ↗</a>
           {/* <a href="#" className="hover:text-white transition-colors cursor-help">X (Twitter) ↗</a> */}
         </div>
       </footer>

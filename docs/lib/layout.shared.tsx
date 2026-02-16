@@ -7,7 +7,7 @@ export function baseOptions(): BaseLayoutProps {
       title: (
         <span className="flex items-center gap-2 font-semibold">
           <CircuitBoard className="h-5 w-5" />
-          Billyprints
+          Logicarium
         </span>
       ),
     },
